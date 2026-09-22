@@ -119,9 +119,11 @@ function updateIncome() {
 updateIncome(); */
 
 
+
 // 1. Game State Class
 class Game {
   constructor() {
+
     this.döner = 0;
     this.buildings = [];
     
@@ -135,10 +137,12 @@ class Game {
 
   init() {
     // Manual click listener
-    this.clickButton.addEventListener('click', () => {
-      this.döner++;
-      this.updateUI();
-    });
+    if (this.clickButton) {
+      this.clickButton.addEventListener('click', () => {
+        this.döner++;
+        this.updateUI();
+      });
+    }
 
     // Game loop 
     setInterval(() => {
@@ -156,14 +160,13 @@ class Game {
   }
 
   updateUI() {
-    this.dönerDisplay.innerText = this.döner;
-    this.incomeDisplay.innerText = this.calculateIncome();
+    if (this.dönerDisplay) this.dönerDisplay.innerText = this.döner;
+    if (this.incomeDisplay) this.incomeDisplay.innerText = this.calculateIncome();
   }
 }
 
 // 2. Building Class
 class Building {
-    //building constructor with destructured parameters for better readability compair to the old version
   constructor(game, { name, baseCost, costMultiplier, dps }) {
     this.game = game;
     this.name = name;
@@ -172,7 +175,7 @@ class Building {
     this.dps = dps;
     this.count = 0;
 
-    // new div element for each building with class 'building-item' and inner HTML structure
+    // Create building element
     this.element = document.createElement('div');
     this.element.className = 'building-item';
 
@@ -196,7 +199,9 @@ class Building {
   }
 
   init() {
-    this.button.addEventListener('click', () => this.buy());
+    if (this.button) {
+      this.button.addEventListener('click', () => this.buy());
+    }
   }
 
   buy() {
@@ -225,15 +230,31 @@ class Building {
 // 3. Game and Register Buildings
 const game = new Game();
 
-// Clean configuration array (buttonId, countId, and costId are no longer required)
+// Clean configuration array with balanced base costs
 const buildingData = [
   { name: 'Worker', baseCost: 10, costMultiplier: 1.8, dps: 1 },
   { name: 'Restorant', baseCost: 40, costMultiplier: 1.5, dps: 2 },
   { name: 'Robot Factory', baseCost: 120, costMultiplier: 1.25, dps: 4 },
-  { name: 'Turks Pizza', baseCost: 1, costMultiplier: 1.2, dps: 6 },
-  { name: 'Doner Factory', baseCost: 2, costMultiplier: 1.3, dps: 8 }
+  { name: 'Turks Pizza', baseCost: 250, costMultiplier: 1.2, dps: 6 },
+  { name: 'Doner Stand', baseCost: 500, costMultiplier: 1.4, dps: 10 },
+  { name: 'Doner Factory', baseCost: 1000, costMultiplier: 1.3, dps: 20 }
 ];
 
-buildingData.forEach(data => {
+buildingData.forEach(data => {  
   game.addBuilding(new Building(game, data));
 });
+
+// 4. Theme Toggle Logic
+const themeBtn = document.getElementById('theme-toggle');
+if (themeBtn) {
+  themeBtn.addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+    const isDark = document.body.classList.contains('dark-mode');
+    themeBtn.innerText = isDark ? 'Light Mode' : 'Dark Mode';
+  });
+} else {
+  console.warn('Theme toggle button not found in the DOM.');
+} 
+
+// 5. Expose game instance for debugging + adding money cheat
+window.game = game;

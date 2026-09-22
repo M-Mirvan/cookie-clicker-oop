@@ -1,0 +1,144 @@
+/* ==========================================
+   Color Themes 
+   ========================================== */
+:root {
+    --bg-color: #f4f4f9;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --text-muted: #666666;
+    --border-color: #dddddd;
+    --primary-red: #d9534f;
+    --button-bg: #ff6b4a;
+    --button-hover: #e05334;
+    --buy-btn-bg: #5cb85c;
+    --buy-btn-hover: #4cae4c;
+}
+
+/* Dark Mode  */
+body.dark-mode {
+    --bg-color: #1a1a24;
+    --card-bg: #282836;
+    --text-color: #f0f0f5;
+    --text-muted: #aaaab8;
+    --border-color: #3f3f52;
+    --primary-red: #ff6b6b;
+    --button-bg: #ff5252;
+    --button-hover: #d32f2f;
+    --buy-btn-bg: #2e7d32;
+    --buy-btn-hover: #1b5e20;
+}
+
+/* ==========================================
+   Base Styles
+   ========================================== */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1 {
+    color: var(--primary-red);
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-top: 30px;
+    color: var(--text-color);
+}
+
+p {
+    font-size: 16px;
+    margin: 8px 0;
+    color: var(--text-muted);
+}
+
+#income, #clickCount {
+    font-weight: bold;
+    color: var(--primary-red);
+}
+
+/* ==========================================
+   Dark Mode Toggle Button
+   ========================================== */
+#theme-toggle {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* ==========================================
+   Main Clicker Button
+   ========================================== */
+#clickDöner {
+    width: 160px;
+    height: auto;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-drag: none; /* to not drag the img while clicking to fast */
+    display: block;
+    margin: 20px auto;
+    transition: transform 0.08s ease;
+}
+
+
+#clickDöner:hover {
+    transform: scale(1.05); 
+}
+
+#clickDöner:active {
+    transform: scale(0.95); 
+}
+
+/* ==========================================
+   Buildings Section
+   ========================================== */
+#buildings-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    max-width: 800px;
+    margin: 20px auto 0 auto;
+}
+
+.building-item {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    width: 200px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.building-item p {
+    font-size: 14px;
+}
+
+.buy-btn {
+    background-color: var(--buy-btn-bg);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 12px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.buy-btn:hover {
+    background-color: var(--buy-btn-hover);
+}
