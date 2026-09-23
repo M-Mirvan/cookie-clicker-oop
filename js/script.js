@@ -1,131 +1,10 @@
-/*let clickDöner = 0; 
-let restorant = 0;
-let Dönerzaakcost = 40;
-
-let worker = 0;
-let workercost = 10;
-
-let robotfactory = 0;
-let robotfactorycost = 120;
-
-const clickDönerDPS = {
-    restorant: 2,
-    worker: 1,
-    robotfactory: 4
-};
-
-//cps logic
-document.getElementById('clickDöner').addEventListener('click', function() {
-    clickDöner++; 
-    document.getElementById('clickCount').innerText = clickDöner;
-});
-//1st factory logic
-document.getElementById('restorant').addEventListener('click', function() {
-    if (clickDöner >= Dönerzaakcost) {
-        clickDöner -= Dönerzaakcost; 
-        restorant += 1;
-
-        Dönerzaakcost = Math.ceil(Dönerzaakcost * 1.5);
-
-        document.getElementById('clickCount').innerText = clickDöner;
-        document.getElementById('restorantCount').innerText = restorant;
-        document.getElementById('restorantcostdisplay').innerText = Dönerzaakcost;
-    } else {
-        alert(`Not enough Döner! You need ${Dönerzaakcost} Döner to buy a restorant.`);
-    }
-});
-
-//factory cps
-/*setInterval(function() {
-    if (clickDöner <= workercost) {
-        clickDöner += (restorant * 2);
-        
-        document.getElementById('clickCount').innerText = clickDöner; 
-    }
-        if (robotfactory > 0) {
-        clickDöner += (robotfactory * 4); 
-        
-        document.getElementById('clickCount').innerText = clickDöner; 
-    }
-        if (worker > 0) {
-        clickDöner += (worker * 1); 
-        
-        document.getElementById('clickCount').innerText = clickDöner; 
-
-    }
-
-}, 1000);
-*/
-/*function updateIncome() {
-    let income = (restorant * clickDönerDPS.restorant) + 
-    (worker * clickDönerDPS.worker) + 
-    (robotfactory * clickDönerDPS.robotfactory);
-    document.getElementById('income').innerText = income;
-
-    return income;
-}
-
-setInterval (function(){
-    let income = updateIncome();
-    clickDöner += income;
-    document.getElementById('clickCount').innerText = clickDöner;
-}, 1000);
-
-//2nd factory logic
-document.getElementById('factory2').addEventListener('click', function() {
-    if (clickDöner >= workercost) {
-        clickDöner -= workercost; 
-        worker += 1;
-
-        workercost = Math.ceil(workercost * 1.8);
-
-        document.getElementById('clickCount').innerText = clickDöner;
-        document.getElementById('workerCount').innerText = worker;
-        document.getElementById('workercostdisplay').innerText = workercost;
-    } else {
-        alert(`Not enough Döner! You need ${workercost} Döner to buy a worker.`);
-    }
-
-});
-
-
-
-
-//1st factory logic
-document.getElementById('robotfactory').addEventListener('click', function() {
-    if (clickDöner >= robotfactorycost) {
-        clickDöner -= robotfactorycost; 
-        robotfactory += 1;
-
-        robotfactorycost = Math.ceil(robotfactorycost * 1.25);
-
-        document.getElementById('clickCount').innerText = clickDöner;
-        document.getElementById('robotfactoryCount').innerText = robotfactory;
-        document.getElementById('robotfactorycostdisplay').innerText = robotfactorycost;
-    } else {
-        alert(`Not enough Döner! You need ${robotfactorycost} Döner to buy a robot factory.`);
-    }
-});
-
-
-function updateIncome() {
-    let income = (restorant * clickDönerDPS.restorant) + 
-    (worker * clickDönerDPS.worker) + 
-    (robotfactory * clickDönerDPS.robotfactory);
-    document.getElementById('income').innerText = income;
-
-    return income;
-}
-updateIncome(); */
-
-
-
 // 1. Game State Class
 class Game {
   constructor() {
-
     this.döner = 0;
     this.buildings = [];
+    this.freepurchase = false; // free purchases (test mode)
+    this.buyMultiplier = 1; // Current selected multiplier 
     
     // UI Elements
     this.dönerDisplay = document.getElementById('clickCount');
@@ -144,6 +23,18 @@ class Game {
       });
     }
 
+    // Multiplier Button Listeners
+    const multiplierButtons = document.querySelectorAll('.quantity-selectors button');
+    multiplierButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        multiplierButtons.forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+
+        this.buyMultiplier = parseInt(e.target.innerText) || 1;
+        this.updateAllBuildingsUI();
+      });
+    });
+
     // Game loop 
     setInterval(() => {
       this.döner += this.calculateIncome();
@@ -157,6 +48,10 @@ class Game {
 
   calculateIncome() {
     return this.buildings.reduce((total, building) => total + building.getIncome(), 0);
+  }
+
+  updateAllBuildingsUI() {
+    this.buildings.forEach(building => building.updateUI());
   }
 
   updateUI() {
@@ -175,7 +70,7 @@ class Building {
     this.dps = dps;
     this.count = 0;
 
-    // Create building element
+    // new building element each time a building is created
     this.element = document.createElement('div');
     this.element.className = 'building-item';
 
@@ -189,7 +84,7 @@ class Building {
     this.countDisplay = this.element.querySelector('.count');
     this.costDisplay = this.element.querySelector('.cost');
 
-    // Append created building element to container
+    // add new building to the buildings list container
     const container = document.getElementById('buildings-list');
     if (container) {
       container.appendChild(this.element);
@@ -204,45 +99,82 @@ class Building {
     }
   }
 
+  
+  getTotalCost(amountToBuy) {
+  let totalCost = 0;
+  let nextItemCost = this.cost;
+
+  for (let itemStep = 0; itemStep < amountToBuy; itemStep++) {
+    totalCost += nextItemCost;
+    nextItemCost = Math.ceil(nextItemCost * this.costmultiplier);
+  }
+
+  return totalCost;
+}
+
   buy() {
-    if (this.game.döner >= this.cost) {
-      this.game.döner -= this.cost;
+  const amountToBuy = this.game.buyMultiplier;
+  const totalCost = this.getTotalCost(amountToBuy);
+
+  if (this.game.döner >= totalCost || this.game.freepurchase) {
+    if (!this.game.freepurchase) {
+      this.game.döner -= totalCost;
+    }
+
+    for (let purchaseStep = 0; purchaseStep < amountToBuy; purchaseStep++) {
       this.count++;
       this.cost = Math.ceil(this.cost * this.costmultiplier);
-
-      this.updateUI();
-      this.game.updateUI();
-    } else {
-      alert(`Not enough Döner! You need ${this.cost} Döner to buy a ${this.name}.`);
     }
+
+    this.updateUI();
+    this.game.updateUI();
+  } else {
+    alert(`Not enough Döner! You need ${totalCost} Döner to buy ${amountToBuy}x ${this.name}.`);
   }
+}
 
   getIncome() {
     return this.count * this.dps;
   }
 
   updateUI() {
+    const amountToBuy = this.game.buyMultiplier;
+    const totalCost = this.getTotalCost(amountToBuy);
+
+    if (this.button) {
+      this.button.innerText = `Buy x${amountToBuy} ${this.name}`;
+    }
     if (this.countDisplay) this.countDisplay.innerText = this.count;
-    if (this.costDisplay) this.costDisplay.innerText = this.cost;
+    if (this.costDisplay) this.costDisplay.innerText = totalCost;
   }
 }
 
 // 3. Game and Register Buildings
 const game = new Game();
 
-// Clean configuration array with balanced base costs
+// data for dynamic creation
 const buildingData = [
-  { name: 'Worker', baseCost: 10, costMultiplier: 1.8, dps: 1 },
-  { name: 'Restorant', baseCost: 40, costMultiplier: 1.5, dps: 2 },
-  { name: 'Robot Factory', baseCost: 120, costMultiplier: 1.25, dps: 4 },
-  { name: 'Turks Pizza', baseCost: 250, costMultiplier: 1.2, dps: 6 },
-  { name: 'Doner Stand', baseCost: 500, costMultiplier: 1.4, dps: 10 },
-  { name: 'Doner Factory', baseCost: 1000, costMultiplier: 1.3, dps: 20 }
+  { name: 'Worker', baseCost: 10, costMultiplier: 1.15, dps: 1 },
+  { name: 'Restorant', baseCost: 40, costMultiplier: 1.15, dps: 3 },
+  { name: 'Robot Factory', baseCost: 120, costMultiplier: 1.15, dps: 10 },
+  { name: 'Turks Pizza', baseCost: 250, costMultiplier: 1.15, dps: 22 },
+  { name: 'Doner Stand', baseCost: 500, costMultiplier: 1.15, dps: 48 },
+  { name: 'Doner Factory', baseCost: 1000, costMultiplier: 1.15, dps: 100 },
+  { name: 'Doner Empire', baseCost: 5000, costMultiplier: 1.15, dps: 600 },
+  { name: 'Doner Planet', baseCost: 10000, costMultiplier: 1.15, dps: 1500 },
+  { name: 'Doner Galaxy', baseCost: 50000, costMultiplier: 1.15, dps: 10000 },
+  { name: 'Doner Universe', baseCost: 100000, costMultiplier: 1.15, dps: 50000 }
 ];
 
 buildingData.forEach(data => {  
   game.addBuilding(new Building(game, data));
 });
+
+// multiplier button default active state
+const defaultMultiplierBtn = document.querySelector('.quantity-selectors button');
+if (defaultMultiplierBtn) {
+  defaultMultiplierBtn.classList.add('active');
+}
 
 // 4. Theme Toggle Logic
 const themeBtn = document.getElementById('theme-toggle');

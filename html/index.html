@@ -7,13 +7,61 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <h1>Doner Clicker</h1>
-    <button id="theme-toggle">🌙 Dark Mode</button>
-    <p>Income: <span id="income">0</span> Doner/sec</p>
-    <p>Doner count: <span id="clickCount">0</span></p>
-    <img src="/IMG/Screenshot 2026-09-22 130947.png" id="clickDöner" alt="Doner">
-    <h2>Factories</h2>
-    <div id="buildings-list"></div>
+    <div class="game-container">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <img src="/IMG/Screenshot 2026-09-22 130947.png" id="clickDöner" alt="Doner">
+        </div>
+
+        <!-- Middle Panel  -->
+        <div class="middle-panel">
+            <div class="middle-top-bar">
+                <div class="nav-buttons-left">
+                    <button class="nav-btn">Options</button>
+                    <button class="nav-btn">Stats</button>
+                </div>
+                
+                <div class="info-box">
+                    <p>Income: <span id="income">0</span> Doner/sec</p>
+                    <p>Doner count: <span id="clickCount">0</span></p>
+                </div>
+
+                <div class="nav-buttons-right">
+                    <button class="nav-btn">Info</button>
+                    <button class="nav-btn">Legacy</button>
+                </div>
+            </div>
+
+            <div class="shelves-container">
+                <div class="shelf"></div>
+                <div class="shelf"></div>
+                <div class="shelf"></div>
+                <div class="shelf"></div>
+                <div class="shelf"></div>
+            </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <h2>Store</h2>
+            <div class="upgrades-bar">
+                <span>Upgrades</span>
+                <div class="upgrade-slots"></div>
+            </div>
+            
+            <div class="buy-modes">
+                <span>Buy / Sell</span>
+                <div class="quantity-selectors">
+                    <button>1</button>
+                    <button>10</button>
+                    <button>50</button>
+                    <button>100</button>
+                </div>
+            </div>
+
+            <div id="buildings-list" role="listbox" aria-label="Factories Shop"></div>
+        </div>
+    </div>
 
     <script src="../js/script.js"></script>
 </body>
