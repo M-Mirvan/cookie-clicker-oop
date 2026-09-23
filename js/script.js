@@ -162,8 +162,8 @@ const buildingData = [
   { name: 'Doner Factory', baseCost: 1000, costMultiplier: 1.15, dps: 100 },
   { name: 'Doner Empire', baseCost: 5000, costMultiplier: 1.15, dps: 600 },
   { name: 'Doner Planet', baseCost: 10000, costMultiplier: 1.15, dps: 1500 },
-  { name: 'Doner Galaxy', baseCost: 50000, costMultiplier: 1.15, dps: 10000 },
-  { name: 'Doner Universe', baseCost: 100000, costMultiplier: 1.15, dps: 50000 }
+  { name: 'Doner Galaxy', baseCost: 50000, costMultiplier: 1.15, dps: 2500 },
+  { name: 'Doner Universe', baseCost: 100000, costMultiplier: 1.15, dps: 8600 }
 ];
 
 buildingData.forEach(data => {  
