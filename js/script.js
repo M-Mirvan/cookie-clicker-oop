@@ -78,11 +78,13 @@ class Building {
         <button class="buy-btn">${this.name}</button>
         <p>Count: <span class="count">0</span></p>
         <p>Cost: <span class="cost">${this.cost}</span> Döner</p>
+        <p>Production Rate: <span class="production-rate">0 Döner/sec</span></p>
     `;
     
     this.button = this.element.querySelector('.buy-btn');
     this.countDisplay = this.element.querySelector('.count');
     this.costDisplay = this.element.querySelector('.cost');
+    this.productionRateDisplay = this.element.querySelector('.production-rate');
 
     // add new building to the buildings list container
     const container = document.getElementById('buildings-list');
@@ -148,6 +150,7 @@ class Building {
     }
     if (this.countDisplay) this.countDisplay.innerText = this.count;
     if (this.costDisplay) this.costDisplay.innerText = totalCost;
+    if (this.productionRateDisplay) this.productionRateDisplay.innerText = `${this.getIncome()} Döner/sec`;
   }
 }
 
