@@ -198,10 +198,10 @@ const buildingData = [
   { name: 'Turkish Pizza', baseCost: 250, costMultiplier: 1.15, dps: 22 },
   { name: 'Doner Stand', baseCost: 500, costMultiplier: 1.15, dps: 48 },
   { name: 'Doner Factory', baseCost: 1000, costMultiplier: 1.15, dps: 100 },
-  { name: 'Doner Empire', baseCost: 5000, costMultiplier: 1.15, dps: 600 },
-  { name: 'Doner Planet', baseCost: 10000, costMultiplier: 1.15, dps: 1500 },
-  { name: 'Doner Galaxy', baseCost: 50000, costMultiplier: 1.15, dps: 10000 },
-  { name: 'Doner Universe', baseCost: 100000, costMultiplier: 1.15, dps: 50000 }
+  { name: 'Doner Empire', baseCost: 5000, costMultiplier: 1.15, dps: 300 },
+  { name: 'Doner Planet', baseCost: 10000, costMultiplier: 1.15, dps: 700 },
+  { name: 'Doner Galaxy', baseCost: 50000, costMultiplier: 1.15, dps: 1500 },
+  { name: 'Doner Universe', baseCost: 100000, costMultiplier: 1.15, dps: 5000 }
 ];
 
 buildingData.forEach(data => {  
