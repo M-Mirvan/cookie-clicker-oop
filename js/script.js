@@ -11,10 +11,27 @@ class Game {
     this.incomeDisplay = document.getElementById('income');
     this.clickButton = document.getElementById('clickDöner');
 
+    // Custom Popup Elements
+    this.popupModal = document.getElementById('popup-modal');
+    this.popupMessage = document.getElementById('popup-message');
+    this.popupCloseBtn = document.getElementById('popup-close-btn');
+
     this.init();
   }
 
   init() {
+    // Popup sluiten via knop
+    if (this.popupCloseBtn) {
+      this.popupCloseBtn.addEventListener('click', () => this.hidePopup());
+    }
+
+    // Popup sluiten door buiten het venster te klikken
+    if (this.popupModal) {
+      this.popupModal.addEventListener('click', (e) => {
+        if (e.target === this.popupModal) this.hidePopup();
+      });
+    }
+
     // Manual click listener
     if (this.clickButton) {
       this.clickButton.addEventListener('click', () => {
@@ -40,6 +57,22 @@ class Game {
       this.döner += this.calculateIncome();
       this.updateUI();
     }, 1000);
+  }
+
+  showPopup(message) {
+    if (this.popupModal && this.popupMessage) {
+      this.popupMessage.innerText = message;
+      this.popupModal.classList.add('show');
+    } else {
+      // Fallback als HTML elementen ontbreken
+      alert(message);
+    }
+  }
+
+  hidePopup() {
+    if (this.popupModal) {
+      this.popupModal.classList.remove('show');
+    }
   }
 
   addBuilding(building) {
@@ -103,39 +136,39 @@ class Building {
     }
   }
 
-  
   getTotalCost(amountToBuy) {
-  let totalCost = 0;
-  let nextItemCost = this.cost;
+    let totalCost = 0;
+    let nextItemCost = this.cost;
 
-  for (let itemStep = 0; itemStep < amountToBuy; itemStep++) {
-    totalCost += nextItemCost;
-    nextItemCost = Math.ceil(nextItemCost * this.costmultiplier);
+    for (let itemStep = 0; itemStep < amountToBuy; itemStep++) {
+      totalCost += nextItemCost;
+      nextItemCost = Math.ceil(nextItemCost * this.costmultiplier);
+    }
+
+    return totalCost;
   }
-
-  return totalCost;
-}
 
   buy() {
-  const amountToBuy = this.game.buyMultiplier;
-  const totalCost = this.getTotalCost(amountToBuy);
+    const amountToBuy = this.game.buyMultiplier;
+    const totalCost = this.getTotalCost(amountToBuy);
 
-  if (this.game.döner >= totalCost || this.game.freepurchase) {
-    if (!this.game.freepurchase) {
-      this.game.döner -= totalCost;
+    if (this.game.döner >= totalCost || this.game.freepurchase) {
+      if (!this.game.freepurchase) {
+        this.game.döner -= totalCost;
+      }
+
+      for (let purchaseStep = 0; purchaseStep < amountToBuy; purchaseStep++) {
+        this.count++;
+        this.cost = Math.ceil(this.cost * this.costmultiplier);
+      }
+
+      this.updateUI();
+      this.game.updateUI();
+    } else {
+      // Aangeroepen via de custom popup functie in Game
+      this.game.showPopup(`Je hebt ${totalCost} Döner nodig om ${amountToBuy}x ${this.name} te kopen.`);
     }
-
-    for (let purchaseStep = 0; purchaseStep < amountToBuy; purchaseStep++) {
-      this.count++;
-      this.cost = Math.ceil(this.cost * this.costmultiplier);
-    }
-
-    this.updateUI();
-    this.game.updateUI();
-  } else {
-    alert(`Not enough Döner! You need ${totalCost} Döner to buy ${amountToBuy}x ${this.name}.`);
   }
-}
 
   getIncome() {
     return this.count * this.dps;
