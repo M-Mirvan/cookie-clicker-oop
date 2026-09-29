@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doner Clicker</title>
     <link rel="stylesheet" href="../css/style.css">
-    <link rel="icon" type="image/x-icon" href="/IMG/kebab.png" alt="creator: @balan- flaticon.com">
+    <link rel="icon" type="image/x-icon" href="/IMG/kebab.png">
 </head>
 <body>
     <div class="game-container">
@@ -14,7 +14,7 @@
             <img src="/IMG/Screenshot 2026-09-22 130947-Photoroom.png" id="clickDöner" alt="Doner">
         </div>
 
-        <!-- Middle Panel  -->
+        <!-- Middle Panel -->
         <div class="middle-panel">
             <div class="middle-top-bar">
                 <div class="nav-buttons-left">
@@ -46,10 +46,10 @@
         <div class="right-panel">
             <button id="theme-toggle">Dark Mode</button>
             <h2>Store</h2>
-            <div class="upgrades-bar">
-                <span>Upgrades</span>
-                <div class="upgrade-slots"></div>
-            </div>
+            <span class="upgrades_title">Upgrades</span>
+            
+            <!-- Upgrades Container with required ID -->
+            <div id="upgrades-list"></div> 
             
             <div class="buy-modes">
                 <span>Buy / Sell</span>
@@ -64,6 +64,7 @@
             <div id="buildings-list" role="listbox" aria-label="Factories Shop"></div>
         </div>
     </div>
+
     <!-- Custom Popup Modal -->
     <div id="popup-modal" class="popup-modal">
         <div class="popup-content">

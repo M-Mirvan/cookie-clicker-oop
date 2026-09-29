@@ -57,7 +57,7 @@ html, body {
     height: 100vh;
 }
 
-/* Left Panel: Döner Image */
+/* Left Panel Döner Image */
 .left-panel {
     width: 30%;
     height: 100%;
@@ -272,6 +272,60 @@ html, body {
   }
 }
 
+/* ==========================================
+   Upgrades Styling 
+   ========================================== */
+/* Scroll Container */
+#upgrades-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-height: 180px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+/* Upgrade Items  */
+.upgrade-item {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+}
+
+.upgrade-item p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.buy-upgrade-btn {
+  background-color: var(--button-bg);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.2s ease;
+}
+
+.buy-upgrade-btn:hover:not(:disabled) {
+  background-color: var(--button-hover);
+}
+
+.buy-upgrade-btn:disabled {
+  background-color: var(--border-color);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .upgrades-bar {
     display: flex;
     align-items: center;
@@ -281,6 +335,16 @@ html, body {
     border-radius: 6px;
     margin-bottom: 10px;
     background-color: var(--bg-color);
+}
+
+.upgrades_title {
+    display: flex;
+    align-items: left;
+    justify-content: space-between;
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .buy-modes {
@@ -346,7 +410,7 @@ html, body {
 
 /* Popup Modal Achtergrond */
 .popup-modal {
-  display: none; /* Standaard verborgen */
+  display: none; 
   position: fixed;
   top: 0;
   left: 0;
@@ -358,12 +422,10 @@ html, body {
   align-items: center;
 }
 
-/* Zichtbare class */
 .popup-modal.show {
   display: flex;
 }
 
-/* Popup Venster */
 .popup-content {
   background-color: #ffffff;
   color: #333333;
@@ -395,7 +457,7 @@ html, body {
   background-color: #e84118;
 }
 
-/* Dark mode ondersteuning */
+/* Dark mode  */
 body.dark-mode .popup-content {
   background-color: #2f3542;
   color: #ffffff;
