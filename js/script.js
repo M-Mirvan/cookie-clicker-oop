@@ -104,15 +104,16 @@ class Game {
 
 // Upgrades Class
 class Upgrades { 
-    constructor(game, { name, cost, buildingName, multiplier }) { 
+    constructor(game, { name, cost, buildingName, multiplier = 2, requirementCount = 0, tier = 1 }) { 
       this.game = game; 
       this.name = name;
       this.cost = cost; 
       this.buildingName = buildingName;
       this.multiplier = multiplier;
+      this.requirementCount = requirementCount;
+      this.tier = tier;
       this.purchased = false;
 
-      //  nieuw HTML element voor deze upgrade
       this.element = document.createElement('div'); 
       this.element.className = 'upgrade-item'; 
 
@@ -120,6 +121,7 @@ class Upgrades {
         <button class="buy-upgrade-btn">Buy ${this.name}</button>
         <p>Boosts ${this.buildingName} (x${this.multiplier})</p>
         <p>Cost: <span class="cost">${this.cost}</span> Döner</p>
+        <p class="req-text">Requires: ${this.requirementCount}x ${this.buildingName}</p>
       `;
 
       this.button = this.element.querySelector('.buy-upgrade-btn');
@@ -146,7 +148,10 @@ class Upgrades {
     buy() {
       if (this.purchased) return;
 
-      if (this.game.döner >= this.cost || this.game.freepurchase) {
+      const targetBuilding = this.game.buildings.find(b => b.name === this.buildingName);
+      const buildingCount = targetBuilding ? targetBuilding.count : 0;
+
+      if ((this.game.döner >= this.cost && buildingCount >= this.requirementCount) || this.game.freepurchase) {
         if (!this.game.freepurchase) {
           this.game.döner -= this.cost;
         }
@@ -154,7 +159,6 @@ class Upgrades {
         this.purchased = true;
 
         //  Apply the multiplier to the target building.
-        const targetBuilding = this.game.buildings.find(b => b.name === this.buildingName);
         if (targetBuilding) {
           targetBuilding.dps *= this.multiplier;
         }
@@ -163,12 +167,33 @@ class Upgrades {
         this.element.remove(); 
         this.game.updateUI();
       } else {
-        this.game.showPopup(`Je hebt ${this.cost} Döner nodig om ${this.name} te kopen.`);
+        if (buildingCount < this.requirementCount) {
+          this.game.showPopup(`Je hebt minstens ${this.requirementCount}x ${this.buildingName} nodig om deze upgrade te kopen.`);
+        } else {
+          this.game.showPopup(`Je hebt ${this.cost} Döner nodig om ${this.name} te kopen.`);
+        }
       }
     }
 
     // Update the button status based on the balance.
     updateUI() {
+      if (this.purchased) return;
+
+      const targetBuilding = this.game.buildings.find(b => b.name === this.buildingName); 
+      const buildingCount = targetBuilding ? targetBuilding.count : 0;
+
+      const previousUpgrade = this.game.upgrades.find(u => 
+        u.buildingName === this.buildingName && u.tier === this.tier - 1
+      );
+
+      const isPreviousPurchased = !previousUpgrade || previousUpgrade.purchased;
+
+      if (isPreviousPurchased && (buildingCount >= this.requirementCount || this.game.freepurchase)) {
+        this.element.style.display = 'block';
+      } else {
+        this.element.style.display = 'none';
+      }
+
       if (this.button) {
         this.button.disabled = this.game.döner < this.cost && !this.game.freepurchase;
       }
@@ -290,16 +315,48 @@ buildingData.forEach(data => {
     game.addBuilding(new Building(game, data)); 
 }); 
 
-// Register Upgrades (dynamic)
-const upgradeData = [
-    { name: 'Sharper Knives', cost: 100, buildingName: 'Worker', multiplier: 2 },
-    { name: 'Better Ovens', cost: 500, buildingName: 'Restaurant', multiplier: 2 },
-    { name: 'AI Slicers', cost: 2000, buildingName: 'Robot Factory', multiplier: 2 }
-];
+const upgradeLevels = [];
+const maxTiers = 50; //  upgrades up to level 1250 for each building.
 
-// Add all upgrades to the game.
-upgradeData.forEach(data => {
-    game.addUpgrade(new Upgrades(game, data));
+for (let i = 1; i <= maxTiers; i++) {
+    upgradeLevels.push({
+        tier: i,
+        req: i * 25, // req: Increases linearly by 25 per tier (25, 50, 75...)
+        costMult: Math.round(Math.pow(2.5, i) * 10), // costMult: Scales exponentially (x2.5 per tier)
+        multiplier: 2, // multiplier: Doubles DPS (x2)
+        title: `Tier ${i}`
+    });
+}
+
+// 1. Unique requirement overrides per building tier
+const customRequirements = {
+    'Worker':          [12, 25, 50, 100], // Tier 1 = 12, Tier 2 = 25, etc.
+    'Restaurant':      [15, 30, 60, 120], // Tier based run for the first 5 tiers then goes back to normal (look into it on wed )
+    'Robot Factory':   [20, 40, 80, 150]
+};
+
+// 2. Generate upgrades with custom requirement overrides
+buildingData.forEach(building => {
+    upgradeLevels.forEach(level => {
+        
+        // Fallback to the standard requirement from level.req
+        let requiredAmount = level.req;
+
+        // Check if a custom requirement exists for this specific building and tier
+        const buildingReqs = customRequirements[building.name];
+        if (buildingReqs && buildingReqs[level.tier - 1] !== undefined) {
+            requiredAmount = buildingReqs[level.tier - 1];
+        }
+
+        game.addUpgrade(new Upgrades(game, {
+            name: `${level.title} ${building.name}`,
+            cost: building.baseCost * level.costMult,
+            buildingName: building.name,
+            multiplier: level.multiplier,
+            requirementCount: requiredAmount,
+            tier: level.tier
+        }));
+    });
 });
 
 // multiplier button  
