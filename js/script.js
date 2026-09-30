@@ -1,6 +1,7 @@
 class Game { 
     constructor() { 
       this.döner = 0; 
+      this.clickPower = 1; 
       this.buildings = []; 
       this.upgrades = []; // upgrades array
       this.freepurchase = false; // free purchases (test mode) 
@@ -35,7 +36,7 @@ class Game {
       // Manual click listener 
       if (this.clickButton) { 
         this.clickButton.addEventListener('click', () => { 
-          this.döner++; 
+          this.döner += this.clickPower; 
           this.updateUI(); 
         }); 
       } 
@@ -200,6 +201,105 @@ class Upgrades {
     }
 } 
 
+class ClickUpgrade extends Upgrades {
+    constructor(game, { name, baseCost, costMultiplier = 2, clickPowerBonus, requiredBuilding = null, baseRequiredCount = 0, countPerLevel = 5, maxLevel = Infinity }) {
+      super(game, { name, cost: baseCost, buildingName: requiredBuilding, requirementCount: baseRequiredCount });
+      
+      this.baseCost = baseCost;
+      this.costMultiplier = costMultiplier;
+      this.clickPowerBonus = clickPowerBonus;
+      this.requiredBuilding = requiredBuilding;
+      this.baseRequiredCount = baseRequiredCount;
+      this.countPerLevel = countPerLevel;
+      this.maxLevel = maxLevel;
+
+      this.level = 0;
+      this.cost = baseCost;
+      this.requiredCount = baseRequiredCount;
+
+      this.element.innerHTML = `
+        <button class="buy-upgrade-btn">Buy ${this.name} (Lvl <span class="lvl">1</span>)</button>
+        <p>Boosts Click Power (+${this.clickPowerBonus} per click)</p>
+        <p>Cost: <span class="cost">${this.cost}</span> Döner</p>
+        <p class="req-text"></p>
+      `;
+
+      this.button = this.element.querySelector('.buy-upgrade-btn');
+      this.costDisplay = this.element.querySelector('.cost');
+      this.lvlDisplay = this.element.querySelector('.lvl');
+      this.reqTextDisplay = this.element.querySelector('.req-text');
+
+      this.init();
+    }
+
+    buy() {
+      if (this.level >= this.maxLevel) return;
+
+      const targetBuilding = this.game.buildings.find(b => b.name === this.requiredBuilding);
+      const buildingCount = targetBuilding ? targetBuilding.count : 0;
+
+      // Controleer gebouweis
+      if (this.requiredBuilding && buildingCount < this.requiredCount && !this.game.freepurchase) {
+        this.game.showPopup(`Je hebt minstens ${this.requiredCount}x ${this.requiredBuilding} nodig om deze upgrade te kopen.`);
+        return;
+      }
+
+      // Controleer geld
+      if (this.game.döner >= this.cost || this.game.freepurchase) {
+        if (!this.game.freepurchase) {
+          this.game.döner -= this.cost;
+        }
+
+        this.level++;
+        this.game.clickPower += this.clickPowerBonus;
+
+        // Bereken nieuwe kosten en nieuwe gebouweis voor het volgende niveau
+        this.cost = Math.ceil(this.baseCost * Math.pow(this.costMultiplier, this.level));
+        this.requiredCount = this.baseRequiredCount + (this.level * this.countPerLevel);
+
+        // Als het maximale niveau is bereikt, verwijder het element
+        if (this.level >= this.maxLevel) {
+          this.purchased = true;
+          this.element.remove();
+        }
+
+        this.game.updateUI();
+      } else {
+        this.game.showPopup(`Je hebt ${this.cost} Döner nodig om ${this.name} te kopen.`);
+      }
+    }
+
+    updateUI() {
+      if (this.purchased) return;
+
+      const targetBuilding = this.game.buildings.find(b => b.name === this.requiredBuilding);
+      const buildingCount = targetBuilding ? targetBuilding.count : 0;
+
+      const hasEnoughBuildings = !this.requiredBuilding || buildingCount >= this.requiredCount;
+
+      // Update teksten op de knop en kaart
+      if (this.lvlDisplay) this.lvlDisplay.innerText = this.level + 1;
+      if (this.costDisplay) this.costDisplay.innerText = this.cost;
+      
+      if (this.reqTextDisplay) {
+        this.reqTextDisplay.innerText = this.requiredBuilding 
+          ? `Requires: ${this.requiredCount}x ${this.requiredBuilding}` 
+          : '';
+      }
+
+      // Toon de upgrade zodra de speler de eerste eis heeft behaald
+      if (hasEnoughBuildings || this.level > 0 || this.game.freepurchase) {
+        this.element.style.display = 'block';
+      } else {
+        this.element.style.display = 'none';
+      }
+
+      if (this.button) {
+        this.button.disabled = (this.game.döner < this.cost || !hasEnoughBuildings) && !this.game.freepurchase;
+      }
+    }
+}
+
 // 2. Building Class 
 class Building { 
     constructor(game, { name, baseCost, costMultiplier, dps }) { 
@@ -314,6 +414,38 @@ const buildingData = [
 buildingData.forEach(data => {    
     game.addBuilding(new Building(game, data)); 
 }); 
+
+// click doner increase upgrades
+
+// Scherper Mes
+game.addUpgrade(new ClickUpgrade(game, {
+    name: 'Scherper Mes',
+    baseCost: 50,
+    costMultiplier: 1.15, // Cost mult x1.15 each time you buy it 
+    clickPowerBonus: 1 // Adds +1 to click doner each time you buy it 
+}));
+
+// Worker Snijtechniek
+game.addUpgrade(new ClickUpgrade(game, {
+    name: 'Worker Snijtechniek',
+    baseCost: 200,
+    costMultiplier: 2.5,
+    clickPowerBonus: 3,
+    requiredBuilding: 'Worker', // Type of requirement to buy the upgrade
+    baseRequiredCount: 5, // How many (factories) you need to buy level 1 
+    countPerLevel: 5 // Increases the requirement by 5 per level
+}));
+
+// Keuken Efficientie
+game.addUpgrade(new ClickUpgrade(game, {
+    name: 'Keuken Efficientie',
+    baseCost: 1000,
+    costMultiplier: 3,
+    clickPowerBonus: 10,
+    requiredBuilding: 'Restaurant',
+    baseRequiredCount: 10,
+    countPerLevel: 10
+}));
 
 const upgradeLevels = [];
 const maxTiers = 50; //  upgrades up to level 1250 for each building.
