@@ -160,7 +160,8 @@ class Upgrades {
       this.purchased = false;
 
       this.element = document.createElement('div'); 
-      this.element.className = 'upgrade-item'; 
+      this.element.className = 'upgrade-item';
+      this.element.style.display = 'none'; // Hide the flicker when refreshing the UI/the game 
 
       this.element.innerHTML = `
         <button class="buy-upgrade-btn">Buy ${this.name}</button>
@@ -275,7 +276,9 @@ class ClickUpgrade extends Upgrades {
       this.lvlDisplay = this.element.querySelector('.lvl');
       this.reqTextDisplay = this.element.querySelector('.req-text');
 
+      this.element.style.display = 'none'; // Hide the flicker when refreshing the UI/the game
       this.init();
+      this.updateUI
     }
 
     buy() {
