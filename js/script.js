@@ -10,6 +10,7 @@ class Game {
       // UI Elements 
       this.dönerDisplay = document.getElementById('clickCount'); 
       this.incomeDisplay = document.getElementById('income'); 
+      this.clickPowerDisplay = document.getElementById('clickPower'); 
       this.clickButton = document.getElementById('clickDöner'); 
 
       // Custom Popup Elements 
@@ -98,6 +99,8 @@ class Game {
     updateUI() { 
       if (this.dönerDisplay) this.dönerDisplay.innerText = Formatter.format(this.döner); 
       if (this.incomeDisplay) this.incomeDisplay.innerText = Formatter.format(this.calculateIncome()); 
+      if (this.clickPowerDisplay) this.clickPowerDisplay.innerText = Formatter.format(this.clickPower); 
+      
       // Update the UI of all existing upgrades.
       this.upgrades.forEach(upgrade => upgrade.updateUI());
     } 
@@ -278,7 +281,7 @@ class ClickUpgrade extends Upgrades {
 
       this.element.style.display = 'none'; // Hide the flicker when refreshing the UI/the game
       this.init();
-      this.updateUI
+      this.updateUI(); // 👈 Typfout hersteld (haakjes toegevoegd)
     }
 
     buy() {
@@ -512,7 +515,7 @@ for (let i = 1; i <= maxTiers; i++) {
 // 1. Unique requirement overrides per building tier
 const customRequirements = {
     'Worker':          [12, 25, 50, 100], // Tier 1 = 12, Tier 2 = 25, etc.
-    'Restaurant':      [15, 30, 60, 120], // Tier based run for the first 5 tiers then goes back to normal (look into it on wed )
+    'Restaurant':      [15, 30, 60, 120], // Tier based run for the first 5 tiers then goes back to normal
     'Robot Factory':   [20, 40, 80, 150]
 };
 
