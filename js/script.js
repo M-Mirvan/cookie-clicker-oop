@@ -96,12 +96,56 @@ class Game {
     } 
 
     updateUI() { 
-      if (this.dönerDisplay) this.dönerDisplay.innerText = this.döner; 
-      if (this.incomeDisplay) this.incomeDisplay.innerText = this.calculateIncome(); 
+      if (this.dönerDisplay) this.dönerDisplay.innerText = Formatter.format(this.döner); 
+      if (this.incomeDisplay) this.incomeDisplay.innerText = Formatter.format(this.calculateIncome()); 
       // Update the UI of all existing upgrades.
       this.upgrades.forEach(upgrade => upgrade.updateUI());
     } 
 } 
+
+class Formatter {
+  static suffixes = [
+    '', 
+    ' Thousand', 
+    ' Million', 
+    ' Billion', 
+    ' Trillion', 
+    ' Quadrillion', 
+    ' Quintillion', 
+    ' Sextillion', 
+    ' Septillion', 
+    ' Octillion', 
+    ' Nonillion', 
+    ' Decillion',
+    ' Undecillion', 
+    ' Duodecillion', 
+    ' Tredecillion', 
+    ' Quattuordecillion', 
+    ' Quindecillion', 
+    ' Sexdecillion', 
+    ' Septendecillion', 
+    ' Octodecillion', 
+    ' Novemdecillion', 
+    ' Vigintillion'
+  ];
+
+  static format(value) {
+    if (value === undefined || value === null || isNaN(value)) return '0';
+    if (value < 1000) return Math.floor(value).toString();
+
+    const tier = Math.floor(Math.log10(value) / 3);
+
+    if (tier >= this.suffixes.length) {
+      return value.toExponential(2).replace('+', '');
+    }
+
+    const suffix = this.suffixes[tier];
+    const scale = Math.pow(10, tier * 3);
+    const scaled = value / scale;
+
+    return scaled.toFixed(2).replace(/\.00$/, '') + suffix;
+  }
+}
 
 // Upgrades Class
 class Upgrades { 
@@ -171,7 +215,7 @@ class Upgrades {
         if (buildingCount < this.requirementCount) {
           this.game.showPopup(`Je hebt minstens ${this.requirementCount}x ${this.buildingName} nodig om deze upgrade te kopen.`);
         } else {
-          this.game.showPopup(`Je hebt ${this.cost} Döner nodig om ${this.name} te kopen.`);
+          this.game.showPopup(`Je hebt ${Formatter.format(this.cost)} Döner nodig om ${this.name} te kopen.`);
         }
       }
     }
@@ -194,6 +238,8 @@ class Upgrades {
       } else {
         this.element.style.display = 'none';
       }
+
+      if (this.costDisplay) this.costDisplay.innerText = Formatter.format(this.cost);
 
       if (this.button) {
         this.button.disabled = this.game.döner < this.cost && !this.game.freepurchase;
@@ -265,7 +311,7 @@ class ClickUpgrade extends Upgrades {
 
         this.game.updateUI();
       } else {
-        this.game.showPopup(`Je hebt ${this.cost} Döner nodig om ${this.name} te kopen.`);
+        this.game.showPopup(`Je hebt ${Formatter.format(this.cost)} Döner nodig om ${this.name} te kopen.`);
       }
     }
 
@@ -279,11 +325,11 @@ class ClickUpgrade extends Upgrades {
 
       // Update teksten op de knop en kaart
       if (this.lvlDisplay) this.lvlDisplay.innerText = this.level + 1;
-      if (this.costDisplay) this.costDisplay.innerText = this.cost;
+      if (this.costDisplay) this.costDisplay.innerText = Formatter.format(this.cost);
       
       if (this.reqTextDisplay) {
         this.reqTextDisplay.innerText = this.requiredBuilding 
-          ? `Requires: ${this.requiredCount}x ${this.requiredBuilding}` 
+          ? `Requires: ${Formatter.format(this.requiredCount)}x ${this.requiredBuilding}` 
           : '';
       }
 
@@ -373,7 +419,7 @@ class Building {
         this.game.updateUI(); 
       } else { 
         //  custom popup functie  
-        this.game.showPopup(`Je hebt ${totalCost} Döner nodig om ${amountToBuy}x ${this.name} te kopen.`); 
+        this.game.showPopup(`Je hebt ${Formatter.format(totalCost)} Döner nodig om ${amountToBuy}x ${this.name} te kopen.`); 
       } 
     } 
 
@@ -388,9 +434,9 @@ class Building {
       if (this.button) { 
         this.button.innerText = `Buy x${amountToBuy} ${this.name}`; 
       } 
-      if (this.countDisplay) this.countDisplay.innerText = this.count; 
-      if (this.costDisplay) this.costDisplay.innerText = totalCost; 
-      if (this.productionRateDisplay) this.productionRateDisplay.innerText = `${this.getIncome()} Döner/sec`; 
+      if (this.countDisplay) this.countDisplay.innerText = Formatter.format(this.count); 
+      if (this.costDisplay) this.costDisplay.innerText = Formatter.format(totalCost); 
+      if (this.productionRateDisplay) this.productionRateDisplay.innerText = `${Formatter.format(this.getIncome())} Döner/sec`; 
     } 
 } 
 
@@ -415,7 +461,7 @@ buildingData.forEach(data => {
     game.addBuilding(new Building(game, data)); 
 }); 
 
-// click doner increase upgrades
+// Unique upgrades for each time you click the doner
 
 // Scherper Mes
 game.addUpgrade(new ClickUpgrade(game, {
@@ -455,7 +501,7 @@ for (let i = 1; i <= maxTiers; i++) {
         tier: i,
         req: i * 25, // req: Increases linearly by 25 per tier (25, 50, 75...)
         costMult: Math.round(Math.pow(2.5, i) * 10), // costMult: Scales exponentially (x2.5 per tier)
-        multiplier: 2, // multiplier: Doubles DPS (x2)
+        multiplier: 2, // multiplier: Doubles CPS (x2)
         title: `Tier ${i}`
     });
 }
