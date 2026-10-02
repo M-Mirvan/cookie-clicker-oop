@@ -149,6 +149,9 @@ export class Game {
         this.clickMultiplierDisplay.innerText = `x${clickMult.toFixed(1)}`;
       }
 
+      // Update building buttons disabled state as money changes
+      this.buildings.forEach(building => building.updateUI());
+
       // Update the UI of all existing upgrades.
       this.upgrades.forEach(upgrade => upgrade.updateUI());
     } 
