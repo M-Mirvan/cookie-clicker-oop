@@ -1,3 +1,141 @@
+class GameEvent {
+  constructor({ id, name, description, duration, globalMultiplier = 1, buildingMultipliers = {}, clickPowerMultiplier = 1, triggerCondition = null, onStart = null, onEnd = null }) {
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.duration = duration;
+    this.timeRemaining = duration;
+    
+    this.globalMultiplier = globalMultiplier;
+    this.buildingMultipliers = buildingMultipliers;
+    this.clickPowerMultiplier = clickPowerMultiplier;
+    this.triggerCondition = triggerCondition;
+    
+    this.onStart = onStart;
+    this.onEnd = onEnd;
+  }
+}
+
+class EventManager {
+  constructor(game, options = {}) {
+    this.game = game;
+    this.eventPool = [];
+    this.activeEvents = [];
+    
+    this.checkInterval = options.checkInterval || 10;
+    this.chancePerCheck = options.chancePerCheck || 0.3;
+    this.timer = 0;
+
+    this.container = document.getElementById('events-banner') || this.createBannerContainer();
+  }
+
+  createBannerContainer() {
+    const banner = document.createElement('div');
+    banner.id = 'events-banner';
+    banner.style.cssText = 'position: fixed; top: 10px; right: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 8px;';
+    document.body.appendChild(banner);
+    return banner;
+  }
+
+  registerEvent(eventData) {
+    this.eventPool.push(eventData);
+  }
+
+  tick() {
+    for (let i = this.activeEvents.length - 1; i >= 0; i--) {
+      const event = this.activeEvents[i];
+      event.timeRemaining--;
+
+      this.updateEventUI(event);
+
+      if (event.timeRemaining <= 0) {
+        this.endEvent(event, i);
+      }
+    }
+
+    this.timer++;
+    if (this.timer >= this.checkInterval) {
+      this.timer = 0;
+      if (Math.random() < this.chancePerCheck) {
+        this.triggerRandomEvent();
+      }
+    }
+  }
+
+  triggerRandomEvent() {
+    if (this.eventPool.length === 0) return;
+
+    const available = this.eventPool.filter(eData => {
+      const isActive = this.activeEvents.some(active => active.id === eData.id);
+      const conditionMet = typeof eData.triggerCondition === 'function' ? eData.triggerCondition(this.game) : true;
+      return !isActive && conditionMet;
+    });
+
+    if (available.length === 0) return;
+
+    const template = available[Math.floor(Math.random() * available.length)];
+    const eventInstance = new GameEvent(template);
+
+    this.activeEvents.push(eventInstance);
+
+    if (typeof eventInstance.onStart === 'function') {
+      eventInstance.onStart(this.game);
+    }
+
+    this.renderEventUI(eventInstance);
+    this.game.showPopup(eventInstance.description, ` EVENT STARTED: ${eventInstance.name}!`);
+  }
+
+  endEvent(event, index) {
+    this.activeEvents.splice(index, 1);
+
+    if (typeof event.onEnd === 'function') {
+      event.onEnd(this.game);
+    }
+
+    const element = document.getElementById(`event-card-${event.id}`);
+    if (element) element.remove();
+
+    this.game.updateUI();
+  }
+
+  getGlobalMultiplier() {
+    return this.activeEvents.reduce((mult, e) => mult * e.globalMultiplier, 1);
+  }
+
+  getBuildingMultiplier(buildingName) {
+    return this.activeEvents.reduce((mult, e) => {
+      const bMult = e.buildingMultipliers[buildingName] || 1;
+      return mult * bMult;
+    }, 1);
+  }
+
+  getClickPowerMultiplier() {
+    return this.activeEvents.reduce((mult, e) => mult * e.clickPowerMultiplier, 1);
+  }
+
+  renderEventUI(event) {
+    const card = document.createElement('div');
+    card.id = `event-card-${event.id}`;
+    card.className = 'event-card';
+    card.style.cssText = 'background: #222; color: #fff; border: 2px solid #f39c12; padding: 10px; borderRadius: 6px; minWidth: 200px; boxShadow: 0 4px 6px rgba(0,0,0,0.3);';
+    card.innerHTML = `
+      <strong style="color: #f39c12;">${event.name}</strong>
+      <p style="margin: 4px 0; fontSize: 12px;">${event.description}</p>
+      <small style="color: #aaa;">Time left: <span class="time-left">${event.timeRemaining}</span>s</small>
+    `;
+    this.container.appendChild(card);
+  }
+
+  updateEventUI(event) {
+    const card = document.getElementById(`event-card-${event.id}`);
+    if (card) {
+      const timeSpan = card.querySelector('.time-left');
+      if (timeSpan) timeSpan.innerText = event.timeRemaining;
+    }
+  }
+}
+
 class Game { 
     constructor() { 
       this.döner = 0; 
@@ -7,14 +145,23 @@ class Game {
       this.freepurchase = false; // free purchases (test mode) 
       this.buyMultiplier = 1; // Current multiplier  
         
+      this.eventManager = new EventManager(this, {
+        checkInterval: 15,
+        chancePerCheck: 0.4
+      });
+
       // UI Elements 
       this.dönerDisplay = document.getElementById('clickCount'); 
       this.incomeDisplay = document.getElementById('income'); 
       this.clickPowerDisplay = document.getElementById('clickPower'); 
       this.clickButton = document.getElementById('clickDöner'); 
 
+      this.globalMultiplierDisplay = document.getElementById('globalMultiplier');
+      this.clickMultiplierDisplay = document.getElementById('clickMultiplier');
+
       // Custom Popup Elements 
       this.popupModal = document.getElementById('popup-modal'); 
+      this.popupTitle = document.getElementById('popup-title');
       this.popupMessage = document.getElementById('popup-message'); 
       this.popupCloseBtn = document.getElementById('popup-close-btn'); 
 
@@ -37,7 +184,8 @@ class Game {
       // Manual click listener 
       if (this.clickButton) { 
         this.clickButton.addEventListener('click', () => { 
-          this.döner += this.clickPower; 
+          const totalClickPower = this.clickPower * this.eventManager.getClickPowerMultiplier();
+          this.döner += totalClickPower; 
           this.updateUI(); 
         }); 
       } 
@@ -56,18 +204,20 @@ class Game {
 
       // Game loop  
       setInterval(() => { 
+        this.eventManager.tick();
         this.döner += this.calculateIncome(); 
         this.updateUI(); 
       }, 1000); 
     } 
 
-    showPopup(message) { 
+    showPopup(message, title = 'Niet genoeg Döner!') { 
       if (this.popupModal && this.popupMessage) { 
+        if (this.popupTitle) this.popupTitle.innerText = title;
         this.popupMessage.innerText = message; 
         this.popupModal.classList.add('show'); 
       } else { 
         // Fallback als HTML elementen ontbreken 
-        alert(message); 
+        alert(`${title}\n${message}`); 
       } 
     } 
 
@@ -87,7 +237,12 @@ class Game {
     }
 
     calculateIncome() { 
-      return this.buildings.reduce((total, building) => total + building.getIncome(), 0); 
+      const globalEventMult = this.eventManager.getGlobalMultiplier();
+
+      return this.buildings.reduce((total, building) => {
+        const buildingEventMult = this.eventManager.getBuildingMultiplier(building.name);
+        return total + (building.getIncome() * buildingEventMult);
+      }, 0) * globalEventMult; 
     } 
 
     updateAllBuildingsUI() { 
@@ -98,9 +253,36 @@ class Game {
 
     updateUI() { 
       if (this.dönerDisplay) this.dönerDisplay.innerText = Formatter.format(this.döner); 
-      if (this.incomeDisplay) this.incomeDisplay.innerText = Formatter.format(this.calculateIncome()); 
-      if (this.clickPowerDisplay) this.clickPowerDisplay.innerText = Formatter.format(this.clickPower); 
       
+      const globalMult = this.eventManager.getGlobalMultiplier();
+      const totalIncome = this.calculateIncome();
+      
+      if (this.incomeDisplay) {
+        if (globalMult > 1) {
+          this.incomeDisplay.innerText = `${Formatter.format(totalIncome)} (x${globalMult.toFixed(1)})`;
+        } else {
+          this.incomeDisplay.innerText = Formatter.format(totalIncome);
+        }
+      }
+
+      const clickMult = this.eventManager.getClickPowerMultiplier();
+      const totalClickPower = this.clickPower * clickMult;
+
+      if (this.clickPowerDisplay) {
+        if (clickMult > 1) {
+          this.clickPowerDisplay.innerText = `${Formatter.format(totalClickPower)} (x${clickMult.toFixed(1)})`;
+        } else {
+          this.clickPowerDisplay.innerText = Formatter.format(this.clickPower);
+        }
+      }
+
+      if (this.globalMultiplierDisplay) {
+        this.globalMultiplierDisplay.innerText = `x${globalMult.toFixed(1)}`;
+      }
+      if (this.clickMultiplierDisplay) {
+        this.clickMultiplierDisplay.innerText = `x${clickMult.toFixed(1)}`;
+      }
+
       // Update the UI of all existing upgrades.
       this.upgrades.forEach(upgrade => upgrade.updateUI());
     } 
@@ -438,6 +620,32 @@ class Building {
 
 // 3. Game and Buildings 
 const game = new Game(); 
+
+game.eventManager.registerEvent({
+  id: 'meat_rush',
+  name: 'Spit Shortage Boom',
+  description: 'Global production doubled x2!',
+  duration: 30,
+  globalMultiplier: 2
+});
+
+game.eventManager.registerEvent({
+  id: 'garlic_frenzy',
+  name: 'Extra Knoflooksaus',
+  description: 'Click power multiplied x5!',
+  duration: 20,
+  clickPowerMultiplier: 5
+});
+
+game.eventManager.registerEvent({
+  id: 'worker_coffee',
+  name: 'Espresso Shift',
+  description: 'Worker production multiplied x4!',
+  duration: 45,
+  buildingMultipliers: {
+    'Worker': 4
+  }
+});
 
 // data for dynamic creation 
 const buildingData = [ 

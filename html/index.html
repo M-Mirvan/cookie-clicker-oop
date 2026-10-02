@@ -26,6 +26,7 @@
                     <p>Income: <span id="income">0</span> Doner/sec</p>
                     <p>Doner count: <span id="clickCount">0</span></p>
                     <p>Per click: <span id="clickPower">1</span></p>
+                    <p>Global Multiplier: <span id="globalMultiplier" class="multiplier-text">x1.0</span> | Click Multiplier: <span id="clickMultiplier" class="multiplier-text">x1.0</span></p>
                 </div>
 
                 <div class="nav-buttons-right">
@@ -49,7 +50,6 @@
             <h2>Store</h2>
             <span class="upgrades_title">Upgrades</span>
             
-            <!-- Upgrades Container with required ID -->
             <div id="upgrades-list"></div> 
             
             <div class="buy-modes">
@@ -69,12 +69,12 @@
     <!-- Custom Popup Modal -->
     <div id="popup-modal" class="popup-modal">
         <div class="popup-content">
-            <h3>Niet genoeg Döner!</h3>
+            <h3 id="popup-title">Niet genoeg Döner!</h3>
             <p id="popup-message"></p>
             <button id="popup-close-btn">Begrepen</button>
         </div>
     </div>
 
-    <script src="../js/script.js"></script>
+    <script type="module" src="../js/Main.js"></script>
 </body>
 </html>

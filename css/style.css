@@ -100,7 +100,8 @@ html, body {
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    height: 90px;
+    min-height: 90px;
+    height: auto;
     border-bottom: 1px solid var(--border-color);
     background-color: var(--card-bg);
 }
@@ -124,7 +125,7 @@ html, body {
 .info-box {
     flex: 1;
     margin: 0 10px;
-    padding: 8px;
+    padding: 6px;
     text-align: center;
     border: 1px solid var(--border-color);
     border-radius: 6px;
@@ -132,9 +133,15 @@ html, body {
 }
 
 .info-box p {
-    font-size: 15px;
+    font-size: 13px;
     color: var(--text-muted);
-    margin: 3px 0;
+    margin: 2px 0;
+    white-space: nowrap; /*no multi line */
+}
+
+.multiplier-text {
+    font-weight: bold;
+    color: var(--primary-red);
 }
 
 #income, #clickCount {
@@ -270,6 +277,58 @@ html, body {
       110% 10%;
     background-size: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
   }
+}
+
+/* ==========================================
+   Active Events Banner & Cards
+   ========================================== */
+#events-banner {
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.event-card {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 2px solid var(--button-bg);
+    border-radius: 8px;
+    padding: 10px 14px;
+    min-width: 220px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: slideIn 0.3s ease-out;
+}
+
+.event-card strong {
+    color: var(--button-bg);
+    font-size: 14px;
+    display: block;
+}
+
+.event-card p {
+    margin: 4px 0;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.event-card small {
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
 /* ==========================================
