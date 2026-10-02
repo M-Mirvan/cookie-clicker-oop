@@ -1,6 +1,6 @@
 import { Formatter } from './Formatter.js';
 
-// Building Class 
+// 2. Building Class 
 export class Building { 
     constructor(game, { name, baseCost, costMultiplier, dps }) { 
       this.game = game; 
@@ -58,7 +58,7 @@ export class Building {
     buy() { 
       const amountToBuy = this.game.buyMultiplier; 
       const totalCost = this.getTotalCost(amountToBuy); 
-
+      // Prevent purchase if player can't afford it instead of popup
       if (this.game.döner >= totalCost || this.game.freepurchase) { 
         if (!this.game.freepurchase) { 
           this.game.döner -= totalCost; 
@@ -71,9 +71,6 @@ export class Building {
 
         this.updateUI(); 
         this.game.updateUI(); 
-      } else { 
-        // custom popup functie  
-        this.game.showPopup(`Je hebt ${Formatter.format(totalCost)} Döner nodig om ${amountToBuy}x ${this.name} te kopen.`); 
       } 
     } 
 
@@ -87,10 +84,10 @@ export class Building {
 
       if (this.button) { 
         this.button.innerText = `Buy x${amountToBuy} ${this.name}`; 
+        this.button.disabled = this.game.döner < totalCost && !this.game.freepurchase; // Disable button when the player doesn't have enough money to buy instead of popup
       } 
       if (this.countDisplay) this.countDisplay.innerText = Formatter.format(this.count); 
       if (this.costDisplay) this.costDisplay.innerText = Formatter.format(totalCost); 
       if (this.productionRateDisplay) this.productionRateDisplay.innerText = `${Formatter.format(this.getIncome())} Döner/sec`; 
     } 
 }
-console.log('Building.js.');
