@@ -1,0 +1,73 @@
+/* ==========================================
+   Base Styles & Modals
+   ========================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Popup Modal Background */
+.popup-modal {
+    display: none; 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-modal.show {
+    display: flex;
+}
+
+.popup-content {
+    background-color: #ffffff;
+    color: #333333;
+    padding: 24px 32px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 380px;
+    width: 90%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.popup-content h3 {
+    margin-top: 0;
+    color: #ff4757;
+}
+
+.popup-content button {
+    margin-top: 16px;
+    padding: 10px 20px;
+    background-color: #ff4757;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.popup-content button:hover {
+    background-color: #e84118;
+}
+
+/* Dark mode override */
+body.dark-mode .popup-content {
+    background-color: #2f3542;
+    color: #ffffff;
+}

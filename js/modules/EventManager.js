@@ -83,7 +83,7 @@ export class EventManager {
     }
 
     this.renderEventUI(eventInstance);
-    this.game.showPopup(eventInstance.description, `⚡ EVENT STARTED: ${eventInstance.name}!`);
+    this.game.showPopup(eventInstance.description, ` EVENT STARTED: ${eventInstance.name}!`);
   }
 
   endEvent(event, index) {

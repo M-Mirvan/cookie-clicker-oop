@@ -1,0 +1,72 @@
+/* ==========================================
+   Upgrades Section
+   ========================================== */
+#upgrades-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    max-height: 180px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+.upgrade-item {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+}
+
+.upgrade-item p {
+    margin: 0;
+    color: var(--text-muted);
+}
+
+.buy-upgrade-btn {
+    background-color: var(--button-bg);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s ease;
+}
+
+.buy-upgrade-btn:hover:not(:disabled) {
+    background-color: var(--button-hover);
+}
+
+.buy-upgrade-btn:disabled {
+    background-color: var(--border-color);
+    color: var(--text-muted);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.upgrades-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 10px;
+    background-color: var(--bg-color);
+}
+
+.upgrades_title {
+    display: flex;
+    align-items: left;
+    justify-content: space-between;
+    padding: 8px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}

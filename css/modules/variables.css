@@ -1,0 +1,30 @@
+/* ==========================================
+   Color Themes & CSS Variables
+   ========================================== */
+:root {
+    --bg-color: #f4f4f9;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --text-muted: #666666;
+    --border-color: #dddddd;
+    --primary-red: #d9534f;
+    --button-bg: #ff6b4a;
+    --button-hover: #e05334;
+    --buy-btn-bg: #5cb85c;
+    --buy-btn-hover: #4cae4c;
+    --theme-btn: #7d2ae8;
+}
+
+body.dark-mode {
+    --bg-color: #1a1a24;
+    --card-bg: #282836;
+    --text-color: #f0f0f5;
+    --text-muted: #aaaab8;
+    --border-color: #3f3f52;
+    --primary-red: #ff6b6b;
+    --button-bg: #ff5252;
+    --button-hover: #d32f2f;
+    --buy-btn-bg: #2e7d32;
+    --buy-btn-hover: #1b5e20;
+    --theme-btn: #481c81;
+}
