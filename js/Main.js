@@ -1,36 +1,18 @@
 import { Game } from './Game.js';
+import { EventManager } from './modules/EventManager.js';
 import { Building } from './modules/Building.js';
 import { Upgrades, ClickUpgrade } from './modules/Upgrades.js';
-import { buildingData, customRequirements } from './modules/Data.js';
+import { buildingData, customRequirements, GAME_EVENTS } from './modules/Data.js';
 
 // 3. Game and Buildings 
 const game = new Game(); 
 
-// Register events into the game's eventManager
-game.eventManager.registerEvent({
-  id: 'meat_rush',
-  name: 'Spit Shortage Boom',
-  description: 'Global production doubled x2!',
-  duration: 30,
-  globalMultiplier: 2
-});
+// Initialize Game & EventManager
+const eventManager = new EventManager(game);
 
-game.eventManager.registerEvent({
-  id: 'garlic_frenzy',
-  name: 'Extra Knoflooksaus',
-  description: 'Click power multiplied x5!',
-  duration: 20,
-  clickPowerMultiplier: 5
-});
-
-game.eventManager.registerEvent({
-  id: 'worker_coffee',
-  name: 'Espresso Shift',
-  description: 'Worker production multiplied x4!',
-  duration: 45,
-  buildingMultipliers: {
-    'Worker': 4
-  }
+// Register all events dynamically from data
+GAME_EVENTS.forEach(eventData => {
+  eventManager.registerEvent(eventData);
 });
 
 buildingData.forEach(data => {    
