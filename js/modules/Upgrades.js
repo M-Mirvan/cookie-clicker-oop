@@ -50,28 +50,25 @@ export class Upgrades {
       const targetBuilding = this.game.buildings.find(b => b.name === this.buildingName);
       const buildingCount = targetBuilding ? targetBuilding.count : 0;
 
-      if ((this.game.döner >= this.cost && buildingCount >= this.requirementCount) || this.game.freepurchase) {
-        if (!this.game.freepurchase) {
-          this.game.döner -= this.cost;
-        }
-
-        this.purchased = true;
-
-        // Apply the multiplier to the target building.
-        if (targetBuilding) {
-          targetBuilding.dps *= this.multiplier;
-        }
-
-        // Remove the item from the list after purchase.
-        this.element.remove(); 
-        this.game.updateUI();
-      } else {
-        if (buildingCount < this.requirementCount) {
-          this.game.showPopup(`Je hebt minstens ${this.requirementCount}x ${this.buildingName} nodig om deze upgrade te kopen.`);
-        } else {
-          this.game.showPopup(`Je hebt ${Formatter.format(this.cost)} Döner nodig om ${this.name} te kopen.`);
-        }
+      // Prevent purchase if criteria are not met
+      if ((this.game.döner < this.cost || buildingCount < this.requirementCount) && !this.game.freepurchase) {
+        return;
       }
+
+      if (!this.game.freepurchase) {
+        this.game.döner -= this.cost;
+      }
+
+      this.purchased = true;
+
+      // Apply the multiplier to the target building.
+      if (targetBuilding) {
+        targetBuilding.dps *= this.multiplier;
+      }
+
+      // Remove the item from the list after purchase.
+      this.element.remove(); 
+      this.game.updateUI();
     }
 
     // Update the button status based on the balance.
@@ -96,7 +93,7 @@ export class Upgrades {
       if (this.costDisplay) this.costDisplay.innerText = Formatter.format(this.cost);
 
       if (this.button) {
-        this.button.disabled = this.game.döner < this.cost && !this.game.freepurchase;
+        this.button.disabled = (this.game.döner < this.cost || buildingCount < this.requirementCount) && !this.game.freepurchase;
       }
     }
 } 
@@ -140,35 +137,30 @@ export class ClickUpgrade extends Upgrades {
       const targetBuilding = this.game.buildings.find(b => b.name === this.requiredBuilding);
       const buildingCount = targetBuilding ? targetBuilding.count : 0;
 
-      // Controleer gebouweis
-      if (this.requiredBuilding && buildingCount < this.requiredCount && !this.game.freepurchase) {
-        this.game.showPopup(`Je hebt minstens ${this.requiredCount}x ${this.requiredBuilding} nodig om deze upgrade te kopen.`);
+      const hasEnoughBuildings = !this.requiredBuilding || buildingCount >= this.requiredCount;
+
+      if ((this.game.döner < this.cost || !hasEnoughBuildings) && !this.game.freepurchase) {
         return;
       }
 
-      // Controleer geld
-      if (this.game.döner >= this.cost || this.game.freepurchase) {
-        if (!this.game.freepurchase) {
-          this.game.döner -= this.cost;
-        }
-
-        this.level++;
-        this.game.clickPower += this.clickPowerBonus;
-
-        // Bereken nieuwe kosten en nieuwe gebouweis voor het volgende niveau
-        this.cost = Math.ceil(this.baseCost * Math.pow(this.costMultiplier, this.level));
-        this.requiredCount = this.baseRequiredCount + (this.level * this.countPerLevel);
-
-        // Als het maximale niveau is bereikt, verwijder het element
-        if (this.level >= this.maxLevel) {
-          this.purchased = true;
-          this.element.remove();
-        }
-
-        this.game.updateUI();
-      } else {
-        this.game.showPopup(`Je hebt ${Formatter.format(this.cost)} Döner nodig om ${this.name} te kopen.`);
+      if (!this.game.freepurchase) {
+        this.game.döner -= this.cost;
       }
+
+      this.level++;
+      this.game.clickPower += this.clickPowerBonus;
+
+      // Bereken nieuwe kosten en nieuwe gebouweis voor het volgende niveau
+      this.cost = Math.ceil(this.baseCost * Math.pow(this.costMultiplier, this.level));
+      this.requiredCount = this.baseRequiredCount + (this.level * this.countPerLevel);
+
+      // Als het maximale niveau is bereikt, verwijder het element
+      if (this.level >= this.maxLevel) {
+        this.purchased = true;
+        this.element.remove();
+      }
+
+      this.game.updateUI();
     }
 
     updateUI() {

@@ -18,7 +18,7 @@
         <div class="middle-panel">
             <div class="middle-top-bar">
                 <div class="nav-buttons-left">
-                    <button class="nav-btn">Options</button>
+                    <button id="options-btn" class="nav-btn">Options</button>
                     <button class="nav-btn">Stats</button>
                 </div>
                 
@@ -63,6 +63,19 @@
             </div>
 
             <div id="buildings-list" role="listbox" aria-label="Factories Shop"></div>
+        </div>
+    </div>
+
+    <!-- Options Modal (Save / Load / Reset) -->
+    <div id="options-modal" class="popup-modal">
+        <div class="popup-content">
+            <h3>Options</h3>
+            <div class="save-controls">
+                <button id="save-btn" class="control-btn">Save Game</button>
+                <button id="load-btn" class="control-btn">Load Game</button>
+                <button id="reset-btn" class="control-btn danger-btn">Reset Progress</button>
+            </div>
+            <button id="options-close-btn" class="control-btn close-btn">Close</button>
         </div>
     </div>
 

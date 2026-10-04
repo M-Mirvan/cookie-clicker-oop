@@ -1,5 +1,6 @@
 import { Formatter } from './modules/Formatter.js';
 import { EventManager } from './modules/EventManager.js';
+import { StorageManager } from './modules/Storage.js';
 
 // 1. Game Class
 export class Game { 
@@ -16,6 +17,9 @@ export class Game {
         chancePerCheck: 0.4
       });
 
+      // Storage Manager Instance
+      this.storageManager = new StorageManager(this);
+
       // UI Elements 
       this.dönerDisplay = document.getElementById('clickCount'); 
       this.incomeDisplay = document.getElementById('income'); 
@@ -24,6 +28,16 @@ export class Game {
 
       this.globalMultiplierDisplay = document.getElementById('globalMultiplier');
       this.clickMultiplierDisplay = document.getElementById('clickMultiplier');
+
+      // Options Modal Elements
+      this.optionsModal = document.getElementById('options-modal');
+      this.optionsBtn = document.getElementById('options-btn');
+      this.optionsCloseBtn = document.getElementById('options-close-btn');
+
+      // Save/Load UI Elements
+      this.saveButton = document.getElementById('save-btn');
+      this.loadButton = document.getElementById('load-btn');
+      this.resetButton = document.getElementById('reset-btn');
 
       // Custom Popup Elements 
       this.popupModal = document.getElementById('popup-modal'); 
@@ -47,6 +61,40 @@ export class Game {
         }); 
       } 
 
+      // Open options modal
+      if (this.optionsBtn && this.optionsModal) {
+        this.optionsBtn.addEventListener('click', () => {
+          this.optionsModal.classList.add('show');
+        });
+      }
+
+      // Close options modal
+      if (this.optionsCloseBtn && this.optionsModal) {
+        this.optionsCloseBtn.addEventListener('click', () => {
+          this.optionsModal.classList.remove('show');
+        });
+      }
+
+      // Close options modal when clicking outside content
+      if (this.optionsModal) {
+        this.optionsModal.addEventListener('click', (e) => {
+          if (e.target === this.optionsModal) {
+            this.optionsModal.classList.remove('show');
+          }
+        });
+      }
+
+      // Save, Load & Reset button listeners
+      if (this.saveButton) {
+        this.saveButton.addEventListener('click', () => this.storageManager.save(true));
+      }
+      if (this.loadButton) {
+        this.loadButton.addEventListener('click', () => this.storageManager.load(true));
+      }
+      if (this.resetButton) {
+        this.resetButton.addEventListener('click', () => this.storageManager.reset());
+      }
+
       // Manual click listener 
       if (this.clickButton) { 
         this.clickButton.addEventListener('click', () => { 
@@ -68,12 +116,25 @@ export class Game {
         }); 
       }); 
 
+      // Load save file on startup
+      setTimeout(() => this.storageManager.load(), 50);
+
       // Game loop  
       setInterval(() => { 
         this.eventManager.tick();
         this.döner += this.calculateIncome(); 
         this.updateUI(); 
       }, 1000); 
+
+      // Auto-save every 10 seconds
+      setInterval(() => {
+        this.storageManager.save();
+      }, 10000);
+
+      // Auto-save when user leaves or reloads the tab
+      window.addEventListener('beforeunload', () => {
+        this.storageManager.save();
+      });
     } 
 
     showPopup(message, title = 'Niet genoeg Döner!') { 
