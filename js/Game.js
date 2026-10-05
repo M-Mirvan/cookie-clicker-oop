@@ -1,6 +1,7 @@
-import { Formatter } from './modules/Formatter.js';
-import { EventManager } from './modules/EventManager.js';
-import { StorageManager } from './modules/Storage.js';
+import { Formatter } from './modules/core/Formatter.js';
+import { EventManager } from './modules/core/EventManager.js';
+import { StorageManager } from './modules/core/Storage.js';
+import { Visuals } from './modules/progression/Visuals.js'; 
 
 // 1. Game Class
 export class Game { 
@@ -17,8 +18,9 @@ export class Game {
         chancePerCheck: 0.4
       });
 
-      // Storage Manager Instance
+      // Single instances of Managers
       this.storageManager = new StorageManager(this);
+      this.visuals = new Visuals(this, 'clickDöner');
 
       // UI Elements 
       this.dönerDisplay = document.getElementById('clickCount'); 
@@ -122,6 +124,7 @@ export class Game {
       // Game loop  
       setInterval(() => { 
         this.eventManager.tick();
+        this.visuals.checkSkinProgression(); // Checks skin each sec
         this.döner += this.calculateIncome(); 
         this.updateUI(); 
       }, 1000); 
@@ -158,7 +161,6 @@ export class Game {
       this.buildings.push(building); 
     } 
 
-    // Methode om een nieuwe upgrade toe te voegen 
     addUpgrade(upgrade) {
       this.upgrades.push(upgrade);
     }
@@ -174,7 +176,6 @@ export class Game {
 
     updateAllBuildingsUI() { 
       this.buildings.forEach(building => building.updateUI()); 
-      // update the upgrade UI when buildings are upgraded.
       this.upgrades.forEach(upgrade => upgrade.updateUI());
     } 
 
@@ -210,11 +211,8 @@ export class Game {
         this.clickMultiplierDisplay.innerText = `x${clickMult.toFixed(1)}`;
       }
 
-      // Update building buttons disabled state as money changes
       this.buildings.forEach(building => building.updateUI());
-
-      // Update the UI of all existing upgrades.
       this.upgrades.forEach(upgrade => upgrade.updateUI());
     } 
 }
-console.log('game.js.');
+console.log('game.js loaded.');

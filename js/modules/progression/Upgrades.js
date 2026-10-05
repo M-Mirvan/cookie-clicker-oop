@@ -1,4 +1,4 @@
-import { Formatter } from './Formatter.js';
+import { Formatter } from '../core/Formatter.js';
 
 // Upgrades Class
 export class Upgrades { 

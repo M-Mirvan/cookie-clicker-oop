@@ -26,14 +26,17 @@ export class EventManager {
     this.chancePerCheck = options.chancePerCheck || 0.3;
     this.timer = 0;
 
-    this.container = document.getElementById('events-banner') || this.createBannerContainer();
+    this.container = this.getOrCreateBannerContainer();
   }
 
-  createBannerContainer() {
-    const banner = document.createElement('div');
-    banner.id = 'events-banner';
-    banner.style.cssText = 'position: fixed; top: 10px; right: 10px; z-index: 1000; display: flex; flex-direction: column; gap: 8px;';
-    document.body.appendChild(banner);
+  getOrCreateBannerContainer() {
+    let banner = document.getElementById('events-banner');
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'events-banner';
+      document.body.appendChild(banner);
+    }
+    banner.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 99999; display: flex; flex-direction: column; gap: 10px; pointer-events: none;';
     return banner;
   }
 
@@ -63,15 +66,22 @@ export class EventManager {
   }
 
   triggerRandomEvent() {
-    if (this.eventPool.length === 0) return;
+    if (this.eventPool.length === 0) {
+      console.warn('EventManager: No events registered in eventPool!');
+      return;
+    }
 
+    // Filter available events on conditions and active status
     const available = this.eventPool.filter(eData => {
       const isActive = this.activeEvents.some(active => active.id === eData.id);
       const conditionMet = typeof eData.triggerCondition === 'function' ? eData.triggerCondition(this.game) : true;
       return !isActive && conditionMet;
     });
 
-    if (available.length === 0) return;
+    if (available.length === 0) {
+      console.log('EventManager: Events exist, but no event conditions were met right now.');
+      return;
+    }
 
     const template = available[Math.floor(Math.random() * available.length)];
     const eventInstance = new GameEvent(template);
@@ -83,7 +93,10 @@ export class EventManager {
     }
 
     this.renderEventUI(eventInstance);
-    this.game.showPopup(eventInstance.description, ` EVENT STARTED: ${eventInstance.name}!`);
+    
+    if (typeof this.game.showPopup === 'function') {
+      this.game.showPopup(eventInstance.description, `EVENT STARTED: ${eventInstance.name}!`);
+    }
   }
 
   endEvent(event, index) {
@@ -118,11 +131,11 @@ export class EventManager {
     const card = document.createElement('div');
     card.id = `event-card-${event.id}`;
     card.className = 'event-card';
-    card.style.cssText = 'background: #222; color: #fff; border: 2px solid #f39c12; padding: 10px; borderRadius: 6px; minWidth: 200px; boxShadow: 0 4px 6px rgba(0,0,0,0.3);';
+    card.style.cssText = 'background: #1e1e24; color: #fff; border: 2px solid #f39c12; padding: 12px 16px; border-radius: 8px; min-width: 220px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); pointer-events: auto; font-family: sans-serif;';
     card.innerHTML = `
-      <strong style="color: #f39c12;">${event.name}</strong>
-      <p style="margin: 4px 0; fontSize: 12px;">${event.description}</p>
-      <small style="color: #aaa;">Time left: <span class="time-left">${event.timeRemaining}</span>s</small>
+      <strong style="color: #f39c12; font-size: 15px; display: block; margin-bottom: 4px;">${event.name}</strong>
+      <p style="margin: 0 0 6px 0; font-size: 13px; color: #ddd;">${event.description}</p>
+      <small style="color: #aaa; font-size: 11px;">Time left: <span class="time-left" style="color: #f1c40f; font-weight: bold;">${event.timeRemaining}</span>s</small>
     `;
     this.container.appendChild(card);
   }
@@ -135,4 +148,3 @@ export class EventManager {
     }
   }
 }
-console.log('EventManager.js.');
