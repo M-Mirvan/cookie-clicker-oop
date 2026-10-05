@@ -1,3 +1,30 @@
+/* Base default styling */
+body {
+  --primary-color: #e67e22;
+  --bg-color: #fdfefe;
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* Stage 2: Warm Orange Pita Vibe */
+body.theme-broodje {
+  --primary-color: #d35400;
+  --bg-color: #fbeee6;
+}
+
+/* Stage 3/4: Neon Grill Vibe */
+body.theme-spit {
+  --primary-color: #e74c3c;
+  --bg-color: #2c3e50;
+  color: #ecf0f1;
+}
+
+/* Stage 5: Gold Theme */
+body.theme-gold {
+  --primary-color: #f1c40f;
+  --bg-color: #1a1a1a;
+  color: #ffd700;
+}
+
 /* ==========================================
    3-Column Main Layout & Theme Toggle
    ========================================== */

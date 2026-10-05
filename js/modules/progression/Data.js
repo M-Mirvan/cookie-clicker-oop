@@ -29,7 +29,6 @@ export const GAME_EVENTS = [
     description: 'Global production doubled (x2)!',
     duration: 30,
     globalMultiplier: 2,
-    // Fixed: check game.döner (or game.doner)
     triggerCondition: (game) => (game.döner ?? game.doner ?? 0) >= 50 // requires at least 50 Döner to trigger
   },
   {
@@ -95,6 +94,7 @@ export const SKIN_STAGES = [
     id: 'wrap',
     name: 'Döner Wrap',
     image: '/IMG/screenshot 2026-09-22 130947-Photoroom.png',
+    themeClass: 'wrap-theme',
     requirement: (game) => true,
     clickMultiplier: 1.0,
     cpsMultiplier: 1.0
@@ -103,6 +103,7 @@ export const SKIN_STAGES = [
     id: 'broodje',
     name: 'Broodje Döner',
     image: '/IMG/broodjedoner.png',
+    themeClass: 'broodje-theme', // document.body.className = 'broodje-theme';
     requirement: (game) => (game.döner ?? game.doner ?? 0) >= 50000,
     clickMultiplier: 1.5,
     clickPowerBonus: 0.25,
@@ -112,6 +113,7 @@ export const SKIN_STAGES = [
     id: 'durum',
     name: 'Dürüm Döner',
     image: '/IMG/durumdoner.png',
+    themeClass: 'durum-theme', // document.body.className = 'durum-theme';
     requirement: (game) => {
       const worker = game.buildings?.find(b => b.name === 'Worker');
       return (worker?.count || 0) >= 35 && (game.döner ?? game.doner ?? 0) >= 250000;
@@ -124,6 +126,7 @@ export const SKIN_STAGES = [
     id: 'doner_rol',
     name: 'Döner Rol',
     image: '/IMG/donerspit.webp',
+    themeClass: 'doner-rol-theme', // document.body.className = 'doner-rol-theme';
     requirement: (game) => {
       const totalBuildings = game.buildings?.reduce((sum, b) => sum + (b.count || 0), 0) || 0;
       return totalBuildings >= 100 && game.easterEggUnlocked;
@@ -145,7 +148,8 @@ export const SKIN_STAGES = [
   {
     id: 'golden_kapsalon',
     name: 'Golden Kapsalon',
-    image: 'assets/skins/kapsalon.png',
+    image: 'assets/skins/kapsalon.png', // document.body.className = 'golden-kapsalon-theme';
+    themeClass: 'golden-kapsalon-theme',
     requirement: (game) => {
       const factory = game.buildings?.find(b => b.name === 'Doner Factory');
       const currentDoner = game.döner ?? game.doner ?? 0;

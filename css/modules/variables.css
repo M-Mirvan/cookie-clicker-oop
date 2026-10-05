@@ -15,6 +15,13 @@
     --theme-btn: #7d2ae8;
 }
 
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+}
+
+/* Dark Mode */
 body.dark-mode {
     --bg-color: #1a1a24;
     --card-bg: #282836;
@@ -27,4 +34,66 @@ body.dark-mode {
     --buy-btn-bg: #2e7d32;
     --buy-btn-hover: #1b5e20;
     --theme-btn: #481c81;
+}
+
+/* ==========================================
+   Progression Stage Themes (Matches Data.js)
+   ========================================== */
+
+/* Stage 1: Döner Wrap */
+body.wrap-theme {
+    --bg-color: #f4f4f9;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --text-muted: #666666;
+    --border-color: #dddddd;
+    --primary-red: #d9534f;
+}
+
+/* Stage 2: Broodje Döner (Warm Orange / Pita) */
+body.broodje-theme {
+    --bg-color: #fff3e0;
+    --card-bg: #ffe0b2;
+    --text-color: #4e342e;
+    --text-muted: #6d4c41;
+    --border-color: #ffcc80;
+    --primary-red: #e65100;
+    --button-bg: #f57c00;
+    --button-hover: #ef6c00;
+}
+
+/* Stage 3: Dürüm Döner (Fresh Green) */
+body.durum-theme {
+    --bg-color: #e8f8f5;
+    --card-bg: #d4efdf;
+    --text-color: #1e8449;
+    --text-muted: #27ae60;
+    --border-color: #a9dfbf;
+    --primary-red: #196f3d;
+    --button-bg: #2ecc71;
+    --button-hover: #27ae60;
+}
+
+/* Stage 4: Döner Rol / Spit (Dark Grill Red) */
+body.doner-rol-theme {
+    --bg-color: #212121;
+    --card-bg: #333333;
+    --text-color: #ffffff;
+    --text-muted: #cccccc;
+    --border-color: #444444;
+    --primary-red: #f44336;
+    --button-bg: #d32f2f;
+    --button-hover: #b71c1c;
+}
+
+/* Stage 5: Golden Kapsalon (Luxurious Gold) */
+body.golden-kapsalon-theme {
+    --bg-color: #121212;
+    --card-bg: #242424;
+    --text-color: #ffd700;
+    --text-muted: #d4af37;
+    --border-color: #ffd700;
+    --primary-red: #ffae00;
+    --button-bg: #d4af37;
+    --button-hover: #aa8c2c;
 }

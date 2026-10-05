@@ -64,12 +64,17 @@ export class StorageManager {
       this.game.visuals.unlockedSkins = new Set(data.unlockedSkins);
     }
 
-    // Restore active skin/stage image
+    // Restore active skin/stage image and theme
     if (data.currentSkinId && this.game.visuals) {
       this.game.visuals.currentSkinId = data.currentSkinId;
       const activeStage = SKIN_STAGES.find(s => s.id === data.currentSkinId);
       if (activeStage) {
         this.game.visuals.updateClickerSkin(activeStage.image);
+        
+        // Apply the saved stage theme class to document.body
+        if (typeof this.game.visuals.applyStageTheme === 'function') {
+          this.game.visuals.applyStageTheme(activeStage.themeClass);
+        }
       }
     }
 

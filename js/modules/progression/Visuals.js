@@ -6,7 +6,7 @@ export class Visuals {
     this.clickerImgId = clickerImgId;
     this.clickerImg = document.getElementById(clickerImgId);
     
-    // Track all unlocked skin IDs permanently so if you have under 50 k you dont go back to the wrap skin
+    // Track all unlocked skin IDs permanently so if you spend Döner you don't lose your skin
     this.unlockedSkins = new Set(['wrap']);
     this.currentSkinId = 'wrap';
   }
@@ -36,10 +36,30 @@ export class Visuals {
       if (this.unlockedSkins.has(stage.id)) {
         if (this.currentSkinId !== stage.id) {
           this.currentSkinId = stage.id;
+          
+          // Update clicker image artwork
           this.updateClickerSkin(stage.image);
+
+          // Update theme styling on document body
+          this.applyStageTheme(stage.themeClass);
         }
-        break; // Stop loop when last unlocked stage is found
+        break; // Stop loop once highest unlocked stage is found
       }
+    }
+  }
+
+  // Updates theme classes on <body>
+  applyStageTheme(themeClass) {
+    // Remove any previous theme classes from body
+    SKIN_STAGES.forEach((s) => {
+      if (s.themeClass) {
+        document.body.classList.remove(s.themeClass);
+      }
+    });
+
+    // Add the new theme class if one exists for this stage
+    if (themeClass) {
+      document.body.classList.add(themeClass);
     }
   }
 
