@@ -49,3 +49,31 @@
         opacity: 1;
     }
 }
+
+.floating-text {
+  position: absolute;
+  pointer-events: none;
+  font-size: 1.5rem;
+  color: var(--primary-red);
+  font-weight: bold;
+  user-select: none;
+  animation: floatUpAndFade 0.8s ease-out forwards;
+  z-index: 1000;
+}
+
+@keyframes floatUpAndFade {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: translateY(-30px) scale(1.1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-60px) scale(1);
+  }
+}

@@ -148,7 +148,7 @@ export const SKIN_STAGES = [
   {
     id: 'golden_kapsalon',
     name: 'Golden Kapsalon',
-    image: 'assets/skins/kapsalon.png', // document.body.className = 'golden-kapsalon-theme';
+    image: '/IMG/kapsalon.webp', 
     themeClass: 'golden-kapsalon-theme',
     requirement: (game) => {
       const factory = game.buildings?.find(b => b.name === 'Doner Factory');
