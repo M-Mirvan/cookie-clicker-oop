@@ -1,70 +1,94 @@
 /* ==========================================
    Buildings & Buy Selectors
    ========================================== */
-.buy-modes {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 0;
-    margin-bottom: 10px;
-    font-weight: bold;
-}
 
-.buy-btn:disabled {
-    background-color: var(--border-color);
-    color: var(--text-muted);
-    cursor: not-allowed;
-    opacity: 0.6;
+.buy-modes {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: var(--text-muted);
 }
 
 .quantity-selectors button {
-    padding: 4px 8px;
-    margin-left: 2px;
-    cursor: pointer;
-    border: 1px solid var(--border-color);
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    border-radius: 4px;
+  padding: 4px 8px;
+  margin-left: 2px;
+  cursor: pointer;
+  border: 1px solid var(--border-color);
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border-radius: 4px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.quantity-selectors button:hover {
+  border-color: var(--buy-btn-bg);
 }
 
 .quantity-selectors button.active {
-    background-color: var(--buy-btn-bg);
-    color: white;
-    border-color: var(--buy-btn-bg);
+  background-color: var(--buy-btn-bg);
+  color: white;
+  border-color: var(--buy-btn-bg);
+  box-shadow: 0 0 6px var(--stage-glow);
 }
 
 #buildings-list {
-    flex: 1;
-    overflow-y: auto;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    background-color: var(--bg-color);
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: var(--bg-color);
+}
+
+#buildings-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+#buildings-list::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 4px;
 }
 
 .building-item {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  transition: border-color 0.2s ease;
+}
+
+.building-item:hover {
+  border-color: var(--buy-btn-bg);
 }
 
 .buy-btn {
-    background-color: var(--buy-btn-bg);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 12px;
-    font-weight: bold;
-    cursor: pointer;
-    width: 100%;
-    margin-bottom: 6px;
+  background-color: var(--buy-btn-bg);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 6px;
+  transition: background-color 0.2s ease;
 }
 
-.buy-btn:hover {
-    background-color: var(--buy-btn-hover);
+.buy-btn:hover:not(:disabled) {
+  background-color: var(--buy-btn-hover);
+  box-shadow: 0 0 8px var(--stage-glow);
+}
+
+.buy-btn:disabled {
+  background-color: var(--border-color);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.6;
 }

@@ -1,99 +1,271 @@
 /* ==========================================
    Color Themes & CSS Variables
    ========================================== */
+
 :root {
     --bg-color: #f4f4f9;
     --card-bg: #ffffff;
+    --panel-bg: #ffffff;
     --text-color: #333333;
     --text-muted: #666666;
     --border-color: #dddddd;
+
     --primary-red: #d9534f;
     --button-bg: #ff6b4a;
     --button-hover: #e05334;
     --buy-btn-bg: #5cb85c;
     --buy-btn-hover: #4cae4c;
     --theme-btn: #7d2ae8;
+
+    --stage-glow: rgba(230, 126, 34, 0.25);
 }
+
+/* ==========================================
+   Base Body
+   ========================================== */
 
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
-    transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+    transition:
+        background-color 0.5s ease,
+        color 0.5s ease,
+        border-color 0.5s ease;
 }
 
-/* Dark Mode */
-body.dark-mode {
+/* ==========================================
+   Stage 1: Döner Wrap
+   ========================================== */
+
+body.wrap-theme {
+    --bg-color: #f4f4f9;
+    --card-bg: #ffffff;
+    --panel-bg: #ffffff;
+    --text-color: #333333;
+    --text-muted: #666666;
+    --border-color: #dddddd;
+
+    --primary-red: #d9534f;
+    --button-bg: #ff6b4a;
+    --button-hover: #e05334;
+    --buy-btn-bg: #5cb85c;
+    --buy-btn-hover: #4cae4c;
+    --theme-btn: #7d2ae8;
+
+    --stage-glow: rgba(230, 126, 34, 0.25);
+}
+
+/* Stage 1 - Dark Mode */
+body.dark-mode.wrap-theme {
     --bg-color: #1a1a24;
     --card-bg: #282836;
+    --panel-bg: #22222f;
     --text-color: #f0f0f5;
     --text-muted: #aaaab8;
     --border-color: #3f3f52;
+
     --primary-red: #ff6b6b;
     --button-bg: #ff5252;
     --button-hover: #d32f2f;
     --buy-btn-bg: #2e7d32;
     --buy-btn-hover: #1b5e20;
-    --theme-btn: #481c81;
+    --theme-btn: #9b59e8;
+
+    --stage-glow: rgba(255, 107, 107, 0.35);
 }
 
 /* ==========================================
-   Progression Stage Themes (Matches Data.js)
+   Stage 2: Broodje Döner
    ========================================== */
 
-/* Stage 1: Döner Wrap */
-body.wrap-theme {
-    --bg-color: #f4f4f9;
-    --card-bg: #ffffff;
-    --text-color: #333333;
-    --text-muted: #666666;
-    --border-color: #dddddd;
-    --primary-red: #d9534f;
-}
-
-/* Stage 2: Broodje Döner (Warm Orange / Pita) */
 body.broodje-theme {
     --bg-color: #fff3e0;
     --card-bg: #ffe0b2;
+    --panel-bg: #fff8ef;
     --text-color: #4e342e;
     --text-muted: #6d4c41;
     --border-color: #ffcc80;
+
     --primary-red: #e65100;
     --button-bg: #f57c00;
     --button-hover: #ef6c00;
+    --buy-btn-bg: #689f38;
+    --buy-btn-hover: #558b2f;
+    --theme-btn: #ef6c00;
+
+    --stage-glow: rgba(245, 124, 0, 0.35);
 }
 
-/* Stage 3: Dürüm Döner (Fresh Green) */
+/* Stage 2 - Dark Mode */
+body.dark-mode.broodje-theme {
+    --bg-color: #2b1d16;
+    --card-bg: #3d291d;
+    --panel-bg: #332219;
+    --text-color: #ffe0b2;
+    --text-muted: #ffcc80;
+    --border-color: #70451f;
+
+    --primary-red: #ff8a3d;
+    --button-bg: #e86f00;
+    --button-hover: #c45d00;
+    --buy-btn-bg: #689f38;
+    --buy-btn-hover: #558b2f;
+    --theme-btn: #ff8a3d;
+
+    --stage-glow: rgba(255, 138, 61, 0.35);
+}
+
+/* ==========================================
+   Stage 3: Dürüm Döner
+   ========================================== */
+
 body.durum-theme {
     --bg-color: #e8f8f5;
     --card-bg: #d4efdf;
+    --panel-bg: #f0fffa;
     --text-color: #1e8449;
     --text-muted: #27ae60;
     --border-color: #a9dfbf;
+
     --primary-red: #196f3d;
     --button-bg: #2ecc71;
     --button-hover: #27ae60;
+    --buy-btn-bg: #229954;
+    --buy-btn-hover: #1e8449;
+    --theme-btn: #196f3d;
+
+    --stage-glow: rgba(46, 204, 113, 0.35);
 }
 
-/* Stage 4: Döner Rol / Spit (Dark Grill Red) */
+/* Stage 3 - Dark Mode */
+body.dark-mode.durum-theme {
+    --bg-color: #10251d;
+    --card-bg: #18382a;
+    --panel-bg: #143025;
+    --text-color: #a9f5c9;
+    --text-muted: #70d99b;
+    --border-color: #286044;
+
+    --primary-red: #45d483;
+    --button-bg: #20b866;
+    --button-hover: #179650;
+    --buy-btn-bg: #229954;
+    --buy-btn-hover: #1e8449;
+    --theme-btn: #45d483;
+
+    --stage-glow: rgba(46, 204, 113, 0.4);
+}
+
+/* ==========================================
+   Stage 4: Döner Rol / Spit
+   ========================================== */
+
 body.doner-rol-theme {
     --bg-color: #212121;
     --card-bg: #333333;
+    --panel-bg: #292929;
     --text-color: #ffffff;
     --text-muted: #cccccc;
     --border-color: #444444;
+
     --primary-red: #f44336;
     --button-bg: #d32f2f;
     --button-hover: #b71c1c;
+    --buy-btn-bg: #c62828;
+    --buy-btn-hover: #8e0000;
+    --theme-btn: #f44336;
+
+    --stage-glow: rgba(211, 47, 47, 0.4);
 }
 
-/* Stage 5: Golden Kapsalon (Luxurious Gold) */
+/* Stage 4 - Dark Mode */
+body.dark-mode.doner-rol-theme {
+    --bg-color: #0d0d0d;
+    --card-bg: #1b1b1b;
+    --panel-bg: #151515;
+    --text-color: #ffffff;
+    --text-muted: #bdbdbd;
+    --border-color: #383838;
+
+    --primary-red: #ff4d43;
+    --button-bg: #c62828;
+    --button-hover: #8e0000;
+    --buy-btn-bg: #b71c1c;
+    --buy-btn-hover: #7f0000;
+    --theme-btn: #ff4d43;
+
+    --stage-glow: rgba(244, 67, 54, 0.45);
+}
+
+/* ==========================================
+   Stage 5: Golden Kapsalon
+   ========================================== */
+
 body.golden-kapsalon-theme {
     --bg-color: #121212;
     --card-bg: #242424;
+    --panel-bg: #1b1b1b;
     --text-color: #ffd700;
     --text-muted: #d4af37;
     --border-color: #ffd700;
+
     --primary-red: #ffae00;
     --button-bg: #d4af37;
     --button-hover: #aa8c2c;
+    --buy-btn-bg: #d4af37;
+    --buy-btn-hover: #aa8c2c;
+    --theme-btn: #ffd700;
+
+    --stage-glow: rgba(255, 215, 0, 0.45);
+}
+
+/* Stage 5 - Dark Mode */
+body.dark-mode.golden-kapsalon-theme {
+    --bg-color: #050505;
+    --card-bg: #151515;
+    --panel-bg: #0d0d0d;
+    --text-color: #ffd700;
+    --text-muted: #d4af37;
+    --border-color: #806c00;
+
+    --primary-red: #ffc107;
+    --button-bg: #c49b20;
+    --button-hover: #967718;
+    --buy-btn-bg: #c49b20;
+    --buy-btn-hover: #967718;
+    --theme-btn: #ffd700;
+
+    --stage-glow: rgba(255, 215, 0, 0.5);
+}
+
+/* ==========================================
+   Floating Text Effect
+   ========================================== */
+
+.floating-text {
+    position: absolute;
+    pointer-events: none;
+    font-size: 1.5rem;
+    color: var(--primary-red);
+    user-select: none;
+    animation: floatUpAndFade 0.8s ease-out forwards;
+    z-index: 1000;
+    font-weight: bold;
+}
+
+@keyframes floatUpAndFade {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: translateY(-30px) scale(1.1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-60px) scale(1);
+    }
 }

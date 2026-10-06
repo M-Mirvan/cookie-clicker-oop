@@ -156,7 +156,7 @@ export const SKIN_STAGES = [
       return (currentDoner >= 1000000000 && (factory?.count || 0) >= 1) || (game.totalClicks || 0) >= 100000;
     },
     clickMultiplier: 10.0,
-    cpsMultiplier: 10.0,
+    cpsMultiplier: 10.0, // commit it as added dark color theme and change stage colors 
     hasGoldFoilParticles: true
   }
 ];
