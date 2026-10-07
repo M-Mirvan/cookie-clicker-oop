@@ -209,3 +209,19 @@ body.theme-gold {
   50% { background-position: 0% 20%, 10% 40%, 30% 30%; }
   100% { background-position: 0% 10%, 10% 30%, 30% 20%; background-size: 0% 0%; }
 }
+
+/* Gamble Modal Styling */
+.gamble-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.gamble-options .control-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+}

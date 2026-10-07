@@ -1,6 +1,7 @@
 import { Game } from './Game.js';
 import { Building } from './modules/core/Building.js';
 import { Upgrades, ClickUpgrade } from './modules/progression/Upgrades.js';
+import { Gamble } from './modules/core/Gamble.js';
 import {
   buildingData,
   customRequirements,
@@ -10,6 +11,7 @@ import {
 } from './modules/progression/Data.js';
 
 const game = new Game();
+const gamble = new Gamble(game);
 
 // Hook up the visual effects
 game.visuals.initFloatingText();

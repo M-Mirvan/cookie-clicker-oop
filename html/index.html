@@ -30,6 +30,7 @@
                 </div>
 
                 <div class="nav-buttons-right">
+                    <button id="open-gamble-btn" class="nav-btn">Casino 🎰</button> <!-- Knop voor Casino -->
                     <button class="nav-btn">Info</button>
                     <button class="nav-btn">Legacy</button>
                 </div>
@@ -86,6 +87,22 @@
             <h3 id="popup-title">Niet genoeg Döner!</h3>
             <p id="popup-message"></p>
             <button id="popup-close-btn">Begrepen</button>
+        </div>
+    </div>
+
+    <!-- Gamble Casino Modal -->
+    <div id="gamble-modal" class="popup-modal">
+        <div class="popup-content">
+            <h3>Döner Casino 🎰</h3>
+            <p id="gamble-result">Kies je inzet en beproef je geluk!</p>
+            
+            <div class="gamble-options">
+                <button class="gamble-btn control-btn" data-amount="100">100 Döner</button>
+                <button class="gamble-btn control-btn" data-amount="1000">1.000 Döner</button>
+                <button class="gamble-btn control-btn danger-btn" data-amount="all-in">ALL IN</button>
+            </div>
+            
+            <button id="close-gamble-btn" class="control-btn close-btn">Sluiten</button>
         </div>
     </div>
 
